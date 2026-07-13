@@ -149,7 +149,7 @@
 </head>
 <body>
 
-<!-- ХИТРЫЙ ХАК ДЛЯ ОБХОДА CORS: Браузер сам активирует вебхук при загрузке этой невидимки! -->
+<!-- Невидимый тег-активатор для железного удержания вебхука -->
 <img src="https://telegram.org" style="display:none; width:1px; height:1px;">
 
 <div class="header">
@@ -170,7 +170,8 @@
 </div>
 
 <div class="footer-action">
-    <button class="btn" id="actionBtn" onclick="startDiagnostics()">Начать диагностику</button>
+    <!-- ТЕКСТ КНОПКИ ИСПРАВЛЕН НАЗАД НА «Записаться на диагностику» -->
+    <button class="btn" id="actionBtn" onclick="startDiagnostics()">Записаться на диагностику</button>
 </div>
 
 <script>
