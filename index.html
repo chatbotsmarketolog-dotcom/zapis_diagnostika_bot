@@ -171,21 +171,32 @@
 </div>
 
 <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // Разворачиваем на весь экран
+    // Безопасная инициализация Telegram Web App
+    let tg = window.Telegram?.WebApp;
     
-    // Автоматическая подстройка под тему Telegram (если у юзера светлая тема)
-    if (tg.colorScheme === 'light') {
-        document.documentElement.style.setProperty('--bg-color', '#f5f5f7');
-        document.documentElement.style.setProperty('--text-main', '#000000');
-        document.documentElement.style.setProperty('--text-muted', '#6e6e73');
-        document.documentElement.style.setProperty('--bot-bubble', '#ffffff');
-        document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.05)');
-        document.getElementById('actionBtn').style.background = '#007aff';
-        document.getElementById('actionBtn').style.color = '#ffffff';
+    if (tg) {
+        try {
+            tg.expand(); // Разворачиваем на весь экран
+            
+            // Автоматическая подстройка под тему Telegram (если у юзера светлая тема)
+            if (tg.colorScheme === 'light') {
+                document.documentElement.style.setProperty('--bg-color', '#f5f5f7');
+                document.documentElement.style.setProperty('--text-main', '#000000');
+                document.documentElement.style.setProperty('--text-muted', '#6e6e73');
+                document.documentElement.style.setProperty('--bot-bubble', '#ffffff');
+                document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.05)');
+                const actionBtnStyle = document.getElementById('actionBtn');
+                if (actionBtnStyle) {
+                    actionBtnStyle.style.background = '#007aff';
+                    actionBtnStyle.style.color = '#ffffff';
+                }
+            }
+        } catch (e) {
+            console.log("Ошибка инициализации стилей ТГ:", e);
+        }
     }
 
-    // Вшитые данные
+    // Вшитые данные авторизации
     const BOT_TOKEN = "8977099298:AAGsDid9z1xZ1BJMmP9SW5E4EdPklV2Tq5Y";
     const ADMIN_ID = "6300678737";
 
@@ -193,22 +204,28 @@
     const actionBtn = document.getElementById('actionBtn');
     const typingIndicator = document.getElementById('typing');
 
-    const user = tg.initDataUnsafe?.user;
-    const userName = user ? `@${user.username || 'скрыт'}` : "нет_ника";
-    const fullName = user ? `${user.first_name} ${user.last_name || ''}` : "Пользователь из поиска";
+    // Железная защита данных пользователя — скрипт больше никогда не упадет
+    let userName = "нет_ника";
+    let fullName = "Пользователь из поиска";
+
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const u = tg.initDataUnsafe.user;
+        userName = u.username ? `@${u.username}` : "скрыт";
+        fullName = `${u.first_name || ''} ${u.last_name || ''}`.trim() || "Пользователь";
+    }
 
     function startDiagnostics() {
-        // Юзер кликает -> выводится его реплика
+        // Юзер кликает -> выводится его реплика в чат
         appendMessage("диагностика", "user");
-        actionBtn.style.display = "none"; // Прячем кнопку
+        if (actionBtn) actionBtn.style.display = "none"; // Прячем кнопку
 
         // Показываем анимацию "Бот печатает..."
-        typingIndicator.style.display = "block";
+        if (typingIndicator) typingIndicator.style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
 
         // Имитируем размышление AI-агента (1.8 секунды)
         setTimeout(() => {
-            typingIndicator.style.display = "none"; // Убираем анимацию
+            if (typingIndicator) typingIndicator.style.display = "none"; // Убираем анимацию
             
             appendMessage(
                 "🔥 <b>Отличный выбор! Ваша заявка успешно отправлена Кристине.</b><br><br>" +
@@ -217,7 +234,7 @@
                 "bot"
             );
             
-            // Отправляем лид Кристине в ЛС без серверов
+            // Отправляем лид Кристине в ЛС
             sendNotificationToAdmin();
         }, 1800);
     }
@@ -226,7 +243,9 @@
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message', sender);
         msgDiv.innerHTML = text;
-        chatContainer.appendChild(msgDiv);
+        if (chatContainer) {
+            chatContainer.appendChild(msgDiv);
+        }
         window.scrollTo(0, document.body.scrollHeight);
     }
 
@@ -247,7 +266,8 @@
                 parse_mode: "Markdown"
             })
         })
-        .catch(err => console.error(err));
+        .then(res => console.log("Заявка успешно отправлена Кристине!"))
+        .catch(err => console.error("Ошибка сети API Telegram:", err));
     }
 </script>
 </body>
