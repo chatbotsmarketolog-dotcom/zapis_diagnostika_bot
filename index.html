@@ -171,14 +171,11 @@
 </div>
 
 <script>
-    // Безопасная инициализация Telegram Web App
     let tg = window.Telegram?.WebApp;
     
     if (tg) {
         try {
-            tg.expand(); // Разворачиваем на весь экран
-            
-            // Автоматическая подстройка под тему Telegram (если у юзера светлая тема)
+            tg.expand();
             if (tg.colorScheme === 'light') {
                 document.documentElement.style.setProperty('--bg-color', '#f5f5f7');
                 document.documentElement.style.setProperty('--text-main', '#000000');
@@ -192,11 +189,10 @@
                 }
             }
         } catch (e) {
-            console.log("Ошибка инициализации стилей ТГ:", e);
+            console.log("Ошибка ТГ стилей:", e);
         }
     }
 
-    // Вшитые данные авторизации
     const BOT_TOKEN = "8977099298:AAGsDid9z1xZ1BJMmP9SW5E4EdPklV2Tq5Y";
     const ADMIN_ID = "6300678737";
 
@@ -204,7 +200,6 @@
     const actionBtn = document.getElementById('actionBtn');
     const typingIndicator = document.getElementById('typing');
 
-    // Железная защита данных пользователя — скрипт больше никогда не упадет
     let userName = "нет_ника";
     let fullName = "Пользователь из поиска";
 
@@ -215,26 +210,22 @@
     }
 
     function startDiagnostics() {
-        // Юзер кликает -> выводится его реплика в чат
         appendMessage("диагностика", "user");
-        if (actionBtn) actionBtn.style.display = "none"; // Прячем кнопку
+        if (actionBtn) actionBtn.style.display = "none";
 
-        // Показываем анимацию "Бот печатает..."
         if (typingIndicator) typingIndicator.style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
 
-        // Имитируем размышление AI-агента (1.8 секунды)
         setTimeout(() => {
-            if (typingIndicator) typingIndicator.style.display = "none"; // Убираем анимацию
+            if (typingIndicator) typingIndicator.style.display = "none";
             
             appendMessage(
-                "🔥 <b>Отличный выбор! Ваша заявка успешно отправлена Кристине.</b><br><br>" +
-                "Она свяжется с вами в личных сообщениях в течение 2-3 часов.<br><br>" +
-                "А пока мы подбираем свободное окно для созвона, напишите прямо сюда: <i>какая у вас ниша бизнеса и какой инструмент автоматизации вам сейчас нужнее всего?</i> 👇", 
+                "🔥 <b>Отличный выбор! Ваша заявка успешно принята.</b><br><br>" +
+                "Я уже передал данные Кристине. Она свяжется с вами в личных сообщениях. Если вы оставили заявку днем, ответ придет в течение 2-3 часов. Если сейчас глубокая ночь — Кристина напишет вам утром в первую очередь.<br><br>" +
+                "👉 <b>Что сделать сейчас:</b> закройте это мини-приложение (крестик в правом верхнем углу) и напишите в открывшийся чат бота вашу нишу бизнеса. Так Кристина сможет подготовиться к разбору вашего проекта заранее!", 
                 "bot"
             );
             
-            // Отправляем лид Кристине в ЛС
             sendNotificationToAdmin();
         }, 1800);
     }
@@ -243,9 +234,7 @@
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message', sender);
         msgDiv.innerHTML = text;
-        if (chatContainer) {
-            chatContainer.appendChild(msgDiv);
-        }
+        if (chatContainer) chatContainer.appendChild(msgDiv);
         window.scrollTo(0, document.body.scrollHeight);
     }
 
@@ -265,9 +254,7 @@
                 text: textToAdmin,
                 parse_mode: "Markdown"
             })
-        })
-        .then(res => console.log("Заявка успешно отправлена Кристине!"))
-        .catch(err => console.error("Ошибка сети API Telegram:", err));
+        }).catch(err => console.error(err));
     }
 </script>
 </body>
