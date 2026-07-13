@@ -1,0 +1,1 @@
+# zapis_diagnostika_bot
