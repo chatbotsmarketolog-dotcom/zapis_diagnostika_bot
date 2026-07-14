@@ -213,7 +213,7 @@
     }
 
     function startDiagnostics() {
-        appendMessage("диагностика", "user");
+        appendMessage("Записаться на диагностику", "user");
         if (actionBtn) actionBtn.style.display = "none";
 
         if (typingIndicator) typingIndicator.style.display = "block";
@@ -222,10 +222,11 @@
         setTimeout(() => {
             if (typingIndicator) typingIndicator.style.display = "none";
             
+            // ТЕКСТ ПОЛНОСТЬЮ ИСПРАВЛЕН НА РУССКИЙ ЯЗЫК
             appendMessage(
                 "🔥 <b>Отличный выбор! Ваша заявка успешно принята.</b><br><br>" +
                 "Я уже передал данные Кристине. Она свяжется с вами в личных сообщениях. Если вы оставили заявку днем, ответ придет в течение 2-3 часов. Если сейчас глубокая ночь — Кристина напишет вам утром в первую очередь.<br><br>" +
-                "👉 <b>What to do now:</b> close this app and type your business niche in our chat!", 
+                "👉 <b>Что сделать сейчас:</b> закройте это мини-приложение (крестик в правом верхнем углу) и напишите в открывшийся чат бота вашу нишу бизнеса. Так Кристина сможет подготовиться к разбору вашего проекта заранее!", 
                 "bot"
             );
             
