@@ -85,32 +85,6 @@
             border: none;
         }
 
-        /* Поле ввода ниши */
-        .input-container {
-            display: none;
-            width: 100%;
-            gap: 10px;
-            margin-top: 10px;
-            animation: fadeIn 0.4s ease forwards;
-        }
-
-        .input-field {
-            flex-grow: 1;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid var(--border-color);
-            padding: 14px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 15px;
-            outline: none;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .input-field:focus {
-            border-color: var(--accent-glow);
-        }
-
         /* Анимация печати */
         .typing-indicator {
             display: none;
@@ -175,24 +149,24 @@
 </head>
 <body>
 
+<!-- Невидимый тег-активатор для железного удержания вебхука -->
+<img src="https://telegram.org" style="display:none; width:1px; height:1px;">
+
 <div class="header">
     <h1>КРИСТИНА.AI</h1>
     <p>Архитектура автоматизации инфобизнеса</p>
 </div>
 
 <div class="chat-container" id="chat">
+    <!-- Первое сообщение -->
     <div class="message bot">
         🤖 Рада видеть вас! Я интеллектуальный ассистент Кристины.<br><br>Помогаю экспертам выстроить надежные автоворонки, которые заменяют рутину и освобождают до 12 часов в неделю.<br><br>Чтобы записаться на аудит вашей системы продаж, нажмите кнопку ниже.
     </div>
 </div>
 
+<!-- Индикатор набора текста -->
 <div class="typing-indicator" id="typing">
     <span></span><span></span><span></span>
-</div>
-
-<!-- Поле для ввода ниши -->
-<div class="input-container" id="inputBlock">
-    <input type="text" class="input-field" id="nicheInput" placeholder="Введите вашу нишу бизнеса...">
 </div>
 
 <div class="footer-action">
@@ -217,7 +191,9 @@
                     actionBtnStyle.style.color = '#ffffff';
                 }
             }
-        } catch (e) { console.log(e); }
+        } catch (e) {
+            console.log("Ошибка ТГ стилей:", e);
+        }
     }
 
     const BOT_TOKEN = "8977099298:AAGsDid9z1xZ1BJMmP9SW5E4EdPklV2Tq5Y";
@@ -226,11 +202,9 @@
     const chatContainer = document.getElementById('chat');
     const actionBtn = document.getElementById('actionBtn');
     const typingIndicator = document.getElementById('typing');
-    const inputBlock = document.getElementById('inputBlock');
-    const nicheInput = document.getElementById('nicheInput');
 
-    let userName = "из_ВК_или_поиска";
-    let fullName = "Пользователь";
+    let userName = "нет_ника";
+    let fullName = "Пользователь из поиска";
 
     if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const u = tg.initDataUnsafe.user;
@@ -238,10 +212,10 @@
         fullName = `${u.first_name || ''} ${u.last_name || ''}`.trim() || "Пользователь";
     }
 
-    // ШАГ 1: Клик по кнопке «Записаться на диагностику»
     function startDiagnostics() {
-        appendMessage("Записаться на диагностику", "user");
+        appendMessage("диагностика", "user");
         if (actionBtn) actionBtn.style.display = "none";
+
         if (typingIndicator) typingIndicator.style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
 
@@ -249,91 +223,42 @@
             if (typingIndicator) typingIndicator.style.display = "none";
             
             appendMessage(
-                "🤖 Отличный выбор! Я готов зафиксировать вашу заявку.<br><br>" +
-                "Уточните, пожалуйста: <b>какая у вас ниша бизнеса или инфобизнеса?</b> Напишите в поле ввода ниже и нажмите кнопку отправки.", 
+                "🔥 <b>Отличный выбор! Ваша заявка успешно принята.</b><br><br>" +
+                "Я уже передал данные Кристине. Она свяжется с вами в личных сообщениях. Если вы оставили заявку днем, ответ придет в течение 2-3 часов. Если сейчас глубокая ночь — Кристина напишет вам утром в первую очередь.<br><br>" +
+                "👉 <b>What to do now:</b> close this app and type your business niche in our chat!", 
                 "bot"
             );
             
-            if (inputBlock) inputBlock.style.display = "flex";
-            if (actionBtn) {
-                actionBtn.innerText = "Отправить нишу ➔";
-                actionBtn.setAttribute("onclick", "submitNiche()");
-                actionBtn.style.display = "block";
-            }
-            window.scrollTo(0, document.body.scrollHeight);
-        }, 1500);
+            sendNotificationToAdmin();
+        }, 1800);
     }
 
-    // ШАГ 2: Ввод ниши и расчет времени суток
-    function submitNiche() {
-        const nicheText = nicheInput.value.trim();
-        if (!nicheText) {
-            alert("Пожалуйста, введите вашу нишу!");
-            return;
-        }
-
-        appendMessage(nicheText, "user");
-        if (inputBlock) inputBlock.style.display = "none";
-        if (actionBtn) actionBtn.style.display = "none";
-        if (typingIndicator) typingIndicator.style.display = "block";
+    function appendMessage(text, sender) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', sender);
+        msgDiv.innerHTML = text;
+        if (chatContainer) chatContainer.appendChild(msgDiv);
         window.scrollTo(0, document.body.scrollHeight);
+    }
 
-        setTimeout(() => {
-            if (typingIndicator) typingIndicator.style.display = "none";
+    function sendNotificationToAdmin() {
+        const textToAdmin = `🚀 **Новая заявка на ДИАГНОСТИКУ из Web App!**\n\n` +
+                            `👤 Клиент: ${fullName}\n` +
+                            `🆔 Юзернейм: ${userName}\n` +
+                            `🎯 Статус: Ожидает разбора`;
 
-            const date = new Date();
-            const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
-            const moscowDate = new Date(utc + (3600000 * 3)); 
-            const currentHour = moscowDate.getHours();
-
-            let finalReply = "";
-
-            if (currentHour >= 22 || currentHour < 8) {
-                finalReply = "🔥 <b>Ваша заявка успешно принята Кристиной!</b><br><br>" +
-                             "Поскольку сейчас глубокая ночь (по МСК), Кристина детально изучит ваш проект и <b>напишет вам в личные сообщения утром в первую очередь</b>. Хорошего отдыха!";
-            } else {
-            finalReply = "🔥 <b>Ваша заявка успешно принята Кристиной!</b><br><br>" +
-                         "Она свяжется с вами в личных сообщениях <b>в течение 2-3 часов</b> для подбора удобного времени созвона. Пожалуйста, держите уведомления включенными!";
-        }
-
-        appendMessage(finalReply, "bot");
+        const url = `https://telegram.org{BOT_TOKEN}/sendMessage`;
         
-        // Вызов функции отправки
-        sendFullFormToAdmin(nicheText, moscowDate);
-    }, 1500);
-}
-
-function appendMessage(text, sender) {
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', sender);
-    msgDiv.innerHTML = text;
-    if (chatContainer) chatContainer.appendChild(msgDiv);
-    window.scrollTo(0, document.body.scrollHeight);
-}
-
-// Исправленная функция отправки формы
-function sendFullFormToAdmin(niche, moscowTime) {
-    const timeString = moscowTime.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
-    
-    const textToAdmin = `🚀 **НОВАЯ ЗАЯВКА НА ДИАГНОСТИКУ!**\n\n` +
-                        `👤 Клиент: ${fullName}\n` +
-                        `🆔 Юзернейм: ${userName}\n` +
-                        `🎯 Ниша бизнеса: ${niche}\n` +
-                        `⏰ Время отправки: ${timeString} (МСК)\n` +
-                        `🟢 Статус: Ожидает разбора`;
-
-    const url = `https://telegram.org{BOT_TOKEN}/sendMessage`;
-    
-    fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            chat_id: ADMIN_ID,
-            text: textToAdmin,
-            parse_mode: "Markdown"
-        })
-    }).catch(err => console.error("Ошибка отправки:", err));
-}
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: ADMIN_ID,
+                text: textToAdmin,
+                parse_mode: "Markdown"
+            })
+        }).catch(err => console.error(err));
+    }
 </script>
 </body>
 </html>
