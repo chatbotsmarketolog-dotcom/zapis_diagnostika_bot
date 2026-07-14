@@ -103,6 +103,8 @@
             color: #fff;
             font-size: 15px;
             outline: none;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .input-field:focus {
@@ -173,9 +175,6 @@
 </head>
 <body>
 
-<!-- Невидимый активатор для удержания вебхука (на всякий случай) -->
-<img src="https://telegram.org" style="display:none; width:1px; height:1px;">
-
 <div class="header">
     <h1>КРИСТИНА.AI</h1>
     <p>Архитектура автоматизации инфобизнеса</p>
@@ -191,7 +190,7 @@
     <span></span><span></span><span></span>
 </div>
 
-<!-- Поле для ввода ниши (всплывает на Шаге 2) -->
+<!-- Поле для ввода ниши -->
 <div class="input-container" id="inputBlock">
     <input type="text" class="input-field" id="nicheInput" placeholder="Введите вашу нишу бизнеса...">
 </div>
@@ -239,7 +238,7 @@
         fullName = `${u.first_name || ''} ${u.last_name || ''}`.trim() || "Пользователь";
     }
 
-    // ШАГ 1: Клик по первой кнопке
+    // ШАГ 1: Клик по кнопке «Записаться на диагностику»
     function startDiagnostics() {
         appendMessage("Записаться на диагностику", "user");
         if (actionBtn) actionBtn.style.display = "none";
@@ -255,7 +254,6 @@
                 "bot"
             );
             
-            // Показываем поле ввода ниши и меняем кнопку на отправку формы
             if (inputBlock) inputBlock.style.display = "flex";
             if (actionBtn) {
                 actionBtn.innerText = "Отправить нишу ➔";
@@ -266,7 +264,7 @@
         }, 1500);
     }
 
-    // ШАГ 2: Ввод ниши и финальный расчет времени суток
+    // ШАГ 2: Ввод ниши и расчет времени суток
     function submitNiche() {
         const nicheText = nicheInput.value.trim();
         if (!nicheText) {
@@ -283,7 +281,6 @@
         setTimeout(() => {
             if (typingIndicator) typingIndicator.style.display = "none";
 
-            // РАСЧЕТ ВРЕМЕНИ СУТОК ПО МСК (UTC+3)
             const date = new Date();
             const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
             const moscowDate = new Date(utc + (3600000 * 3)); 
@@ -291,52 +288,49 @@
 
             let finalReply = "";
 
-                        // Ночной режим: с 22:00 до 08:00
             if (currentHour >= 22 || currentHour < 8) {
                 finalReply = "🔥 <b>Ваша заявка успешно принята Кристиной!</b><br><br>" +
                              "Поскольку сейчас глубокая ночь (по МСК), Кристина детально изучит ваш проект и <b>напишет вам в личные сообщения утром в первую очередь</b>. Хорошего отдыха!";
             } else {
-                // Дневной режим
-                finalReply = "🔥 <b>Ваша заявка успешно принята Кристиной!</b><br><br>" +
-                             "Она свяжется с вами в личных сообщениях <b>в течение 2-3 часов</b> для подбора удобного времени созвона. Пожалуйста, держите уведомления включенными!";
-            }
+            finalReply = "🔥 <b>Ваша заявка успешно принята Кристиной!</b><br><br>" +
+                         "Она свяжется с вами в личных сообщениях <b>в течение 2-3 часов</b> для подбора удобного времени созвона. Пожалуйста, держите уведомления включенными!";
+        }
 
-            appendMessage(finalReply, "bot");
-            
-            // Отправляем готовую заявку (имя + ниша) в ваш Telegram-бот
-            sendFullFormToAdmin(nicheText, moscowDate);
-        }, 1500);
-    }
-
-    function appendMessage(text, sender) {
-        const msgDiv = document.createElement('div');
-        msgDiv.classList.add('message', sender);
-        msgDiv.innerHTML = text;
-        if (chatContainer) chatContainer.appendChild(msgDiv);
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-    // Отправка ПОЛНОЙ формы вам в ЛС за один раз
-    function sendFullFormToAdmin(niche, moscowTime) {
-        const timeString = moscowTime.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
+        appendMessage(finalReply, "bot");
         
-        const textToAdmin = `🚀 **НОВАЯ ЗАЯВКА НА ДИАГНОСТИКУ!**\n\n` +
-                            `👤 Клиент: ${fullName}\n` +
-                            `🆔 Юзернейм: ${userName}\n` +
-                            `🎯 Ниша бизнеса: ${niche}\n` +
-                            `⏰ Время отправки: ${timeString} (МСК)\n` +
-                            `🟢 Статус: Ожидает разбора`;
+        // Вызов функции отправки
+        sendFullFormToAdmin(nicheText, moscowDate);
+    }, 1500);
+}
 
-        const url = `https://telegram.org{BOT_TOKEN}/sendMessage`;
-        
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: ADMIN_ID,
-                text: textToAdmin,
-                parse_mode: "Markdown"
-            })
-        }).catch(err => console.error(err));
-    }
+function appendMessage(text, sender) {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message', sender);
+    msgDiv.innerHTML = text;
+    if (chatContainer) chatContainer.appendChild(msgDiv);
+    window.scrollTo(0, document.body.scrollHeight);
+}
 
+// Исправленная функция отправки формы
+function sendFullFormToAdmin(niche, moscowTime) {
+    const timeString = moscowTime.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
+    
+    const textToAdmin = `🚀 **НОВАЯ ЗАЯВКА НА ДИАГНОСТИКУ!**\n\n` +
+                        `👤 Клиент: ${fullName}\n` +
+                        `🆔 Юзернейм: ${userName}\n` +
+                        `🎯 Ниша бизнеса: ${niche}\n` +
+                        `⏰ Время отправки: ${timeString} (МСК)\n` +
+                        `🟢 Статус: Ожидает разбора`;
+
+    const url = `https://telegram.org{BOT_TOKEN}/sendMessage`;
+    
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            chat_id: ADMIN_ID,
+            text: textToAdmin,
+            parse_mode: "Markdown"
+        })
+    }).catch(err => console.error("Ошибка отправки:", err));
+}
