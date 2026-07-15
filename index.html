@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кристина.AI | Выбор услуги</title>
+    <!-- Официальный скрипт Telegram Web Apps -->
     <script src="https://telegram.org"></script>
     <style>
         :root {
@@ -22,6 +23,7 @@
             flex-direction: column;
             min-height: 92vh;
             justify-content: space-between;
+            overflow-x: hidden;
         }
         .header { text-align: center; padding: 10px 0 20px 0; }
         .header h1 {
@@ -77,16 +79,16 @@
 </div>
 
 <div class="footer-action">
-    <button class="btn" onclick="sendToBot('Запустить сценарий: Диагностика')">
+    <button class="btn" onclick="sendToBot('diag')">
         <b>ДИАГНОСТИКА (3 000 ₽)</b>
         <span>Узнать, где моя текущая воронка тайно сливает клиентов.</span>
     </button>
-    <button class="btn" onclick="sendToBot('Запустить сценарий: Разбор')">
+    <button class="btn" onclick="sendToBot('razbor')">
         <b>ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА (2 500 ₽)</b>
         <span>По косточкам разбираем ваше позиционирование, продукт и психологию вашего клиента.</span>
     </button>
-    <button class="btn" onclick="sendToBot('Запустить сценарий: Консультация')">
-        <b>ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ (500 ₽)</b>
+    <button class="btn" onclick="sendToBot('consult')">
+        <b>ПЕРСОНАЛЬНЫЙ КОНСУЛЬТАЦИЯ (500 ₽)</b>
         <span>В течение 20 минут разбираюсь, какая услуга вам может быть полезна именно сейчас.</span>
     </button>
 </div>
@@ -95,12 +97,11 @@
     var tg = window.Telegram?.WebApp;
     if (tg) { try { tg.expand(); } catch (e) {} }
 
-    function sendToBot(text) {
+    function sendToBot(command) {
         try {
             if (tg) {
-                // Нативная утренняя фишка отправки текста в чат
-                tg.sendData(text);
-                // Мгновенное авто-закрытие шторки
+                // Прямой нативный вызов команды — 100% закроет шторку и отправит импульс в чат!
+                tg.openTelegramLink("https://t.me" + command);
                 tg.close();
             }
         } catch (e) {
