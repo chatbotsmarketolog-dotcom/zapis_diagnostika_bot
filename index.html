@@ -83,7 +83,6 @@
             border: none;
         }
 
-        /* Блок календаря */
         .calendar-section {
             display: none;
             flex-direction: column;
@@ -153,7 +152,6 @@
             text-decoration: line-through;
         }
 
-        /* Инпут */
         .input-container {
             display: none;
             width: 100%;
@@ -305,7 +303,6 @@
     let tg = window.Telegram?.WebApp;
     if (tg) { try { tg.expand(); } catch (e) {} }
 
-    // ССЫЛКА НА ВАШ БЭКЕНД GOOGLE SCRIPT
     const SCRIPT_URL = "https://google.com";
 
     const chatContainer = document.getElementById('chat');
@@ -318,13 +315,14 @@
     const slotsGrid = document.getElementById('slotsGrid');
 
     let userName = "из_ВК_или_поиска";
-let telegramFullName = "Пользователь";
-let clientChatId = ""; // Важнейший параметр для вашего sendTG
-if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    let telegramFullName = "Пользователь";
+    let clientChatId = ""; 
+
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
 const u = tg.initDataUnsafe.user;
 userName = u.username ? @${u.username} : "скрыт";
 telegramFullName = ${u.first_name || ''} ${u.last_name || ''}.trim() || "Пользователь";
-clientChatId = String(u.id); // Захватываем ID чата клиента для бэкенда!
+clientChatId = String(u.id);
 }
 let serviceType = "";
 let clientName = "";
@@ -397,7 +395,6 @@ window.scrollTo(0, document.body.scrollHeight);
 }
 function loadCalendarData() {
 typingIndicator.style.display = "block";
-// Запрос к функции getBusySlots вашего бэкенда
 fetch(${SCRIPT_URL}?action=getBusySlots)
 .then(res => res.json())
 .then(data => {
@@ -415,11 +412,10 @@ typingIndicator.style.display = "none";
 appendMessage("🤖 Спасибо за ответы! Слот-система Яндекса синхронизирована. Выберите удобный день и время для встречи:", "bot");
 calendarBlock.style.display = "flex";
 daysRow.innerHTML = "";
-// Жесткая фиксация split('T')[0] для кликабельности кнопок!
 for (let i = 0; i < 3; i++) {
 const d = new Date();
 d.setDate(d.getDate() + i);
-const dateStr = d.toISOString().split('T')[0];
+const dateStr = d.toISOString().split('T')[0]; // Исправлено: берем только саму строку даты
 const options = { weekday: 'short', month: 'short', day: 'numeric' };
 const label = d.toLocaleDateString('ru-RU', options);
 const btn = document.createElement('button');
@@ -458,7 +454,6 @@ function bookSelectedSlot(dateTimeStr) {
 calendarBlock.style.display = "none";
 typingIndicator.style.display = "block";
 window.scrollTo(0, document.body.scrollHeight);
-// Формируем payload в строгом соответствии с вашим Google Script doPost()
 const payload = {
 action: "bookSlot",
 type: serviceType,
@@ -468,7 +463,7 @@ dateTime: dateTimeStr,
 title: ${serviceType}: ${clientName},
 niche: clientNiche,
 pain: clientPain,
-clientChatId: clientChatId // Идеально передаем ID для отправки клиенту!
+clientChatId: clientChatId
 };
 fetch(SCRIPT_URL, {
 method: "POST",
@@ -502,6 +497,3 @@ msgDiv.innerHTML = text;
 chatContainer.appendChild(msgDiv);
 window.scrollTo(0, document.body.scrollHeight);
 }
-</script>
-</body>
-</html>
