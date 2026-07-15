@@ -302,14 +302,14 @@
 <script>
     var SCRIPT_URL = "https://google.com";
 
-    var chatContainer = document.getElementById('chat');
-    var actionBlock = document.getElementById('actionBlock');
-    var typingIndicator = document.getElementById('typing');
-    var calendarBlock = document.getElementById('calendarBlock');
-    var inputBlock = document.getElementById('inputBlock');
-    var textInput = document.getElementById('textInput');
-    var daysRow = document.getElementById('daysRow');
-    var slotsGrid = document.getElementById('slotsGrid');
+    var chatContainer = document.getElementById("chat");
+    var actionBlock = document.getElementById("actionBlock");
+    var typingIndicator = document.getElementById("typing");
+    var calendarBlock = document.getElementById("calendarBlock");
+    var inputBlock = document.getElementById("inputBlock");
+    var textInput = document.getElementById("textInput");
+    var daysRow = document.getElementById("daysRow");
+    var slotsGrid = document.getElementById("slotsGrid");
 
     var userName = "из_ВК_или_поиска";
     var telegramFullName = "Пользователь";
@@ -359,12 +359,12 @@ textInput.value = telegramFullName !== "Пользователь" ? telegramFull
 actionBlock.innerHTML = 'Далее ➔';
 actionBlock.style.display = "flex";
 window.scrollTo(0, document.body.scrollHeight);
-}, 1200);
+}, 1000);
 }
 function handleInputSubmit() {
 var value = textInput.value.trim();
 if (!value) {
-alert("Пожалуйста, заполните поле!");
+alert("Пожалуйста, введите ответ!");
 return;
 }
 appendMessage(value, "user");
@@ -396,7 +396,7 @@ clientPain = value;
 loadCalendarData();
 }
 window.scrollTo(0, document.body.scrollHeight);
-}, 1200);
+}, 1000);
 }
 function loadCalendarData() {
 typingIndicator.style.display = "block";
@@ -420,7 +420,6 @@ daysRow.innerHTML = "";
 for (let i = 0; i < 3; i++) {
 var d = new Date();
 d.setDate(d.getDate() + i);
-// Жёсткое ручное форматирование даты без split('T')
 var pad = function(num) { return (num < 10 ? '0' : '') + num; };
 var dateStr = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 var options = { weekday: 'short', month: 'short', day: 'numeric' };
@@ -482,13 +481,10 @@ body: JSON.stringify(payload)
 }).then(function() {
 typingIndicator.style.display = "none";
 var currentHour = new Date().getHours();
-var dateParts = dateTimeStr.split(' ');
 var finalMsg = "🔥 Потрясающе, " + clientName + "! Ваша запись успешно подтверждена!
 
 " +
-"📅 Дата: " + dateParts[0] + "
-" +
-"⏰ Время: " + dateParts[1] + " (МСК)
+"📅 Дата и время: " + dateTimeStr + " (МСК)
 " +
 "🎯 Формат: " + serviceType + "
 
