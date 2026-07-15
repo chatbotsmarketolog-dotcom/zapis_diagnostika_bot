@@ -17,6 +17,7 @@
             --bot-bubble: rgba(255, 255, 255, 0.07);
             --user-bubble: linear-gradient(135deg, #007aff, #0056b3);
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
@@ -29,7 +30,12 @@
             justify-content: space-between;
             overflow-x: hidden;
         }
-        .header { text-align: center; padding: 10px 0 20px 0; }
+
+        .header {
+            text-align: center;
+            padding: 10px 0 20px 0;
+        }
+
         .header h1 {
             font-size: 22px;
             font-weight: 700;
@@ -39,8 +45,22 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .header p { font-size: 13px; color: var(--text-muted); margin: 0; }
-        .chat-container { width: 100%; display: flex; flex-direction: column; gap: 16px; flex-grow: 1; margin-bottom: 20px; }
+
+        .header p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .chat-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
         .message {
             padding: 14px 18px;
             border-radius: 20px;
@@ -51,62 +71,28 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border-color);
         }
-        .bot { background: var(--bot-bubble); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .user { background: var(--user-bubble); align-self: flex-end; border-bottom-right-radius: 4px; border: none; }
-        .calendar-section { display: none; flex-direction: column; gap: 12px; width: 100%; animation: fadeIn 0.4s ease forwards; box-sizing: border-box; }
-        .calendar-title { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
-        .days-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-        .day-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 13px;
-            cursor: pointer;
-            text-align: center;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
+
+        .bot {
+            background: var(--bot-bubble);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
         }
-        .day-btn.active, .time-btn.active { background: var(--accent-glow); border-color: var(--accent-glow); }
-        .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
-        .time-btn {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 12px 6px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s ease;
+
+        .user {
+            background: var(--user-bubble);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            border: none;
         }
-        .time-btn:disabled {
-            opacity: 0.25;
-            cursor: not-allowed;
-            background: rgba(255, 255, 255, 0.02);
-            border-color: transparent;
-            text-decoration: line-through;
-        }
-        .input-container { display: none; width: 100%; margin-top: 10px; animation: fadeIn 0.4s ease forwards; box-sizing: border-box; }
-        .input-field {
+
+        .footer-action {
             width: 100%;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid var(--border-color);
-            padding: 16px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 15px;
-            outline: none;
-            box-sizing: border-box;
+            padding-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        .input-field:focus { border-color: var(--accent-glow); }
-        .typing-indicator { display: none; align-self: flex-start; background: var(--bot-bubble); padding: 12px 20px; border-radius: 20px; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); margin-top: 5px; }
-        .typing-indicator span { height: 8px; width: 8px; float: left; margin: 0 2px; background-color: var(--text-muted); border-radius: 50%; opacity: 0.4; animation: bounce 1.3s infinite ease-in-out; }
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        .footer-action { width: 100%; padding-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+
         .btn {
             background: #ffffff;
             color: #000000;
@@ -122,11 +108,24 @@
             transition: all 0.2s ease;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
-        .btn-accent { background: var(--user-bubble); color: #ffffff; text-align: center; box-shadow: 0 0 20px rgba(0, 122, 255, 0.2); }
-        .btn span { display: block; font-size: 11px; font-weight: 400; color: #666; margin-top: 4px; }
-        .btn:active { transform: scale(0.98); opacity: 0.9; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+        .btn span {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -136,251 +135,44 @@
     <p>Архитектура автоматизации инфобизнеса</p>
 </div>
 
-<div class="chat-container" id="chat">
+<div class="chat-container">
     <div class="message bot">
         🤖 Рада видеть вас в КРИСТИНА.AI! Я Lina - AI менеджер для записи клиентов к Кристине на консультацию или диагностику.<br><br>Выберите, что вам нужно в данный момент?
     </div>
 </div>
 
-<div class="typing-indicator" id="typing">
-    <span></span><span></span><span></span>
-</div>
-
-<div class="calendar-section" id="calendarBlock">
-    <div class="calendar-title">📅 Выберите дату встречи:</div>
-    <div class="days-row" id="daysRow"></div>
-    <div class="calendar-title" style="margin-top:8px;">⏰ Свободное время (МСК):</div>
-    <div class="slots-grid" id="slotsGrid"></div>
-</div>
-
-<div class="input-container" id="inputBlock">
-    <input type="text" class="input-field" id="textInput" placeholder="Введите ответ...">
-</div>
-
-<div class="footer-action" id="actionBlock">
-    <button class="btn" onclick="startFlow('ДИАГНОСТИКА', '3 000 ₽')">
+<div class="footer-action">
+    <button class="btn" onclick="sendServiceToBot('Диагностика воронки (3 000 руб)')">
         <b>ДИАГНОСТИКА (3 000 ₽)</b>
         <span>Узнать, где моя текущая воронка тайно сливает клиентов.</span>
     </button>
-    <button class="btn" onclick="startFlow('ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА', '2 500 ₽')">
+    <button class="btn" onclick="sendServiceToBot('Персональный разбор проекта (2 500 руб)')">
         <b>ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА (2 500 ₽)</b>
         <span>По косточкам разбираем ваше позиционирование, продукт и психологию вашего клиента, чтобы создать систему под задачу, а не для красоты.</span>
     </button>
-    <button class="btn" onclick="startFlow('ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ', '500 ₽')">
-        <b>ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ (500 ₽)</b>
+    <button class="btn" onclick="sendServiceToBot('Персональная консультация (500 руб)')">
+        <b>ПЕРСОНАЛЬНЫЙ КОНСУЛЬТАЦИЯ (500 ₽)</b>
         <span>В течение 20 минут разбираюсь, какая услуга вам может быть полезна именно сейчас, и отвечаю на ваши вопросы.</span>
     </button>
 </div>
 
 <script>
-    // ДОБАВИЛИ ?v=3.0 ДЛЯ ПРИНУДИТЕЛЬНОГО СБРОСА КЭША НА СЕРВЕРАХ
-    var SCRIPT_URL = "https://google.com";
+    var tg = window.Telegram?.WebApp;
+    if (tg) { try { tg.expand(); } catch (e) {} }
 
-    var chatContainer = document.getElementById("chat");
-    var actionBlock = document.getElementById("actionBlock");
-    var typingIndicator = document.getElementById("typing");
-    var calendarBlock = document.getElementById("calendarBlock");
-    var inputBlock = document.getElementById("inputBlock");
-    var textInput = document.getElementById("textInput");
-    var daysRow = document.getElementById("daysRow");
-    var slotsGrid = document.getElementById("slotsGrid");
-
-    var userName = "из_ВК_или_поиска";
-    var telegramFullName = "Пользователь";
-    var clientChatId = ""; 
-
-    try {
-        var tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.expand();
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                var u = tg.initDataUnsafe.user;
-                userName = u.username ? "@" + u.username : "скрыт";
-                telegramFullName = (u.first_name || "" + " " + (u.last_name || "")).trim() || "Пользователь";
-                clientChatId = String(u.id); 
+    // Единственная, железобетонная функция: отправляет текст услуги в чат и закрывает Mini App
+    function sendServiceToBot(serviceName) {
+        try {
+            if (tg) {
+                // Нативно отправляем текстовую команду прямо в чат бота
+                tg.sendData(serviceName);
+                tg.close();
             }
+        } catch (error) {
+            console.error("Ошибка отправки данных в ТГ:", error);
+            if (tg) tg.close();
         }
-    } catch(e) {}
-
-    var serviceType = "";
-    var clientName = "";
-    var clientNiche = "";
-    var clientPain = "";
-    var selectedDateStr = "";
-    var busySlots = [];
-    var currentStep = 0; 
-
-    var AVAILABLE_HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
-
-    function startFlow(name, price) {
-        serviceType = name + " — " + price;
-        appendMessage(name + " (" + price + ")", "user");
-        actionBlock.style.display = "none";
-        typingIndicator.style.display = "block";
-        window.scrollTo(0, document.body.scrollHeight);
-
-        setTimeout(function() {
-            typingIndicator.style.display = "none";
-            var introText = "";
-            if (name.indexOf("ДИАГНОСТИКА") !== -1) {
-introText = "🤖 На диагностике мы под микроскопом разберем вашу текущую воронку, найдем скрытые разрывы в конверсии и оцифруем точные места утечки вашей прибыли.";
-} else if (name.indexOf("РАЗБОР") !== -1) {
-introText = "🤖 На персональном разборе мы полностью перепроектируем ваше позиционирование, упакуем смыслы продукта и выстроим логику воронки под вашу целевую аудиторию.";
-} else {
-introText = "🤖 На экспресс-консультации мы за 20 минут разберем ваш точечный запрос, определим вектор автоматизации и подберем необходимое решение.";
-}
-appendMessage(introText + "
-
-Перед тем как открыть общий календарь Яндекса, давайте познакомимся. Как я могу к вам обращаться? Напишите ваше имя:", "bot");
-currentStep = 1;
-inputBlock.style.display = "block";
-textInput.placeholder = "Ваше имя...";
-textInput.value = telegramFullName !== "Пользователь" ? telegramFullName : "";
-actionBlock.innerHTML = 'Далее ➔';
-actionBlock.style.display = "flex";
-window.scrollTo(0, document.body.scrollHeight);
-}, 1000);
-}
-function handleInputSubmit() {
-var value = textInput.value.trim();
-if (!value) { alert("Пожалуйста, введите ответ!"); return; }
-appendMessage(value, "user");
-inputBlock.style.display = "none";
-actionBlock.style.display = "none";
-typingIndicator.style.display = "block";
-window.scrollTo(0, document.body.scrollHeight);
-setTimeout(function() {
-typingIndicator.style.display = "none";
-textInput.value = "";
-if (currentStep === 1) {
-clientName = value;
-appendMessage("Приятно познакомиться, " + clientName + "! Уточните, пожалуйста, какая у вас ниша бизнеса или инфобизнеса?", "bot");
-currentStep = 2;
-inputBlock.style.display = "block";
-textInput.placeholder = "Ваша ниша...";
-actionBlock.innerHTML = 'Далее ➔';
-actionBlock.style.display = "flex";
-} else if (currentStep === 2) {
-clientNiche = value;
-appendMessage("Принято. И финальный вопрос: что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?", "bot");
-currentStep = 3;
-inputBlock.style.display = "block";
-textInput.placeholder = "Что мешает/тормозит...";
-actionBlock.innerHTML = 'Далее ➔';
-actionBlock.style.display = "flex";
-} else if (currentStep === 3) {
-clientPain = value;
-loadCalendarData();
-}
-window.scrollTo(0, document.body.scrollHeight);
-}, 1000);
-}
-function loadCalendarData() {
-typingIndicator.style.display = "block";
-fetch(SCRIPT_URL + "&action=getBusySlots")
-.then(function(res) { return res.json(); })
-.then(function(data) { busySlots = data; renderCalendar(); })
-.catch(function(err) { console.error(err); busySlots = []; renderCalendar(); });
-}
-function renderCalendar() {
-typingIndicator.style.display = "none";
-appendMessage("🤖 Спасибо за ответы! Слот-система Яндекса синхронизирована. Выберите удобный день и время для встречи:", "bot");
-calendarBlock.style.display = "flex";
-daysRow.innerHTML = "";
-for (var i = 0; i < 3; i++) {
-var d = new Date();
-d.setDate(d.getDate() + i);
-var pad = function(num) { return (num < 10 ? '0' : '') + num; };
-var dateStr = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-var options = { weekday: 'short', month: 'short', day: 'numeric' };
-var label = d.toLocaleDateString('ru-RU', options);
-var btn = document.createElement('button');
-btn.classList.add('day-btn');
-if (i === 0) { btn.classList.add('active'); selectedDateStr = dateStr; }
-btn.innerText = label;
-(function(currentDateStr) {
-btn.onclick = function() {
-document.querySelectorAll('.day-btn').forEach(function(b) { b.classList.remove('active'); });
-btn.classList.add('active');
-selectedDateStr = currentDateStr;
-renderHours(currentDateStr);
-};
-})(dateStr);
-daysRow.appendChild(btn);
-}
-renderHours(selectedDateStr);
-}
-function renderHours(dateStr) {
-slotsGrid.innerHTML = "";
-var now = new Date();
-var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-var moscowNow = new Date(utc + (3600000 * 3));
-var currentHour = moscowNow.getHours();
-var todayPad = function(num) { return (num < 10 ? '0' : '') + num; };
-var todayStr = moscowNow.getFullYear() + '-' + todayPad(moscowNow.getMonth() + 1) + '-' + todayPad(moscowNow.getDate());
-AVAILABLE_HOURS.forEach(function(hour) {
-var fullDateTimeCheck = dateStr + " " + hour;
-var currentStartHour = parseInt(hour.split(':'));
-var prevHourStr = dateStr + " " + todayPad(currentStartHour - 1) + ":00";
-var isBusy = busySlots.includes(fullDateTimeCheck) || busySlots.includes(prevHourStr);
-if (dateStr === todayStr && currentStartHour <= currentHour) {
-return;
-}
-var btn = document.createElement('button');
-btn.classList.add('time-btn');
-btn.innerText = hour;
-if (isBusy) btn.disabled = true;
-btn.onclick = function() {
-document.querySelectorAll('.time-btn').forEach(function(b) { b.classList.remove('active'); });
-btn.classList.add('active');
-bookSelectedSlot(fullDateTimeCheck);
-};
-slotsGrid.appendChild(btn);
-});
-window.scrollTo(0, document.body.scrollHeight);
-}
-function bookSelectedSlot(dateTimeStr) {
-calendarBlock.style.display = "none";
-typingIndicator.style.display = "block";
-window.scrollTo(0, document.body.scrollHeight);
-var urlParams = "&action=bookSlot" +
-"&type=" + encodeURIComponent(serviceType) +
-"&fullName=" + encodeURIComponent(clientName) +
-"&userName=" + encodeURIComponent(userName) +
-"&dateTime=" + encodeURIComponent(dateTimeStr) +
-"&title=" + encodeURIComponent(serviceType + ": " + clientName) +
-"&niche=" + encodeURIComponent(clientNiche) +
-"&pain=" + encodeURIComponent(clientPain) +
-"&clientChatId=" + encodeURIComponent(clientChatId);
-fetch(SCRIPT_URL + urlParams, { method: "GET" })
-.then(function() {
-typingIndicator.style.display = "none";
-var currentHour = new Date().getHours();
-var finalMsg = "🔥 Потрясающе, " + clientName + "! Ваша запись успешно подтверждена!
-
-" +
-"📅 Дата и время: " + dateTimeStr + " (МСК)
-" +
-"🎯 Формат: " + serviceType + "
-
-" +
-"Лина уже отправила вам чек-лист подтверждения в чат бота. Окно закроется автоматически...";
-appendMessage(finalMsg, "bot");
-setTimeout(function() { if (tg) tg.close(); }, 3500);
-})
-.catch(function(err) {
-typingIndicator.style.display = "none";
-appendMessage("❌ Ошибка связи с календарем. Кристина свяжется с вами вручную!", "bot");
-console.error(err);
-});
-}
-function appendMessage(text, sender) {
-var msgDiv = document.createElement('div');
-msgDiv.classList.add('message', sender);
-msgDiv.innerHTML = text;
-chatContainer.appendChild(msgDiv);
-window.scrollTo(0, document.body.scrollHeight);
-}
+    }
 </script>
 </body>
 </html>
