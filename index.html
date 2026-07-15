@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кристина.AI | Автоворонки и автоматизация</title>
+    <!-- Официальный скрипт Telegram Web Apps -->
     <script src="https://telegram.org"></script>
     <style>
         :root {
@@ -172,7 +173,8 @@
 </div>
 
 <script>
-    var SCRIPT_URL = "https://google.com";
+    // ТВОЙ НОВЫЙ АКТУАЛЬНЫЙ АДРЕС БЭКЕНДА
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC2gX91i_RJe9By3C6uezk28puRhfRLfx9dbCiXxb1rCnIs0-KGjBg-yVLA8JqN1XY/exec";
 
     var chatContainer = document.getElementById("chat");
     var actionBlock = document.getElementById("actionBlock");
@@ -227,7 +229,7 @@
             } else {
                 introText = "🤖 На экспресс-консультации мы за 20 минут разберем ваш точечный запрос, определим вектор автоматизации и подберем необходимое решение.";
             }
-            appendMessage(introText + "<br><br>Перед тем как открыть общий календарь Яндекса, давайте познакомимся. <b>Как я могу к вам обращаться? Напишите ваше имя:</b>", "bot");
+            appendMessage(introText + "<br><br>Перед тем как открыть общий календарь Яндекса, давайте познакомимся. Как я могу к вам обращаться? Напишите ваше имя:", "bot");
             currentStep = 1;
             inputBlock.style.display = "block";
             textInput.placeholder = "Ваше имя...";
@@ -251,7 +253,7 @@
             textInput.value = "";
             if (currentStep === 1) {
                 clientName = value;
-                appendMessage("Приятно познакомиться, " + clientName + "! Уточните, пожалуйста, <b>какая у вас ниша бизнеса или инфобизнеса?</b>", "bot");
+                appendMessage("Приятно познакомиться, " + clientName + "! Уточните, пожалуйста, какая у вас ниша бизнеса или инфобизнеса?", "bot");
                 currentStep = 2;
                 inputBlock.style.display = "block";
                 textInput.placeholder = "Ваша ниша...";
@@ -259,7 +261,7 @@
                 actionBlock.style.display = "flex";
             } else if (currentStep === 2) {
                 clientNiche = value;
-                appendMessage("Принято. И финальный вопрос: <b>что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?</b>", "bot");
+                appendMessage("Принято. И финальный вопрос: что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?", "bot");
                 currentStep = 3;
                 inputBlock.style.display = "block";
                 textInput.placeholder = "Что мешает/тормозит...";
@@ -278,7 +280,7 @@
         fetch(SCRIPT_URL + "?action=getBusySlots")
         .then(function(res) { return res.json(); })
         .then(function(data) { busySlots = data; renderCalendar(); })
-        .catch(function(err) { console.error("Ошибка чтения слотов:", err); busySlots = []; renderCalendar(); });
+        .catch(function(err) { console.error(err); busySlots = []; renderCalendar(); });
     }
 
     function renderCalendar() {
@@ -318,12 +320,12 @@
         var currentHour = moscowNow.getHours();
         var todayPad = function(num) { return (num < 10 ? '0' : '') + num; };
         var todayStr = moscowNow.getFullYear() + '-' + todayPad(moscowNow.getMonth() + 1) + '-' + todayPad(moscowNow.getDate());
-        
         AVAILABLE_HOURS.forEach(function(hour) {
             var fullDateTimeCheck = dateStr + " " + hour;
-            var isBusy = busySlots.includes(fullDateTimeCheck);
-            var startHour = parseInt(hour.split(':')[0]);
-            if (dateStr === todayStr && startHour <= currentHour) {
+            var currentStartHour = parseInt(hour.split(':')[0]);
+            var prevHourStr = dateStr + " " + todayPad(currentStartHour - 1) + ":00";
+            var isBusy = busySlots.includes(fullDateTimeCheck) || busySlots.includes(prevHourStr);
+            if (dateStr === todayStr && currentStartHour <= currentHour) {
                 return;
             }
             var btn = document.createElement('button');
@@ -344,44 +346,27 @@
         calendarBlock.style.display = "none";
         typingIndicator.style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
-        
-        var details = {
-            'action': 'bookSlot',
-            'type': serviceType,
-            'fullName': clientName,
-            'userName': userName,
-            'dateTime': dateTimeStr,
-            'title': serviceType + ": " + clientName,
-            'niche': clientNiche,
-            'pain': clientPain,
-            'clientChatId': clientChatId
-        };
-        var formBody = [];
-        for (var property in details) {
-            var encodedKey = encodeURIComponent(property);
-            var encodedValue = encodeURIComponent(details[property]);
-            formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
-        
-        fetch(SCRIPT_URL, {
-            method: "POST",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-            body: formBody
-        }).then(function() {
+        var urlParams = "?action=bookSlot" +
+            "&type=" + encodeURIComponent(serviceType) +
+            "&fullName=" + encodeURIComponent(clientName) +
+            "&userName=" + encodeURIComponent(userName) +
+            "&dateTime=" + encodeURIComponent(dateTimeStr) +
+            "&title=" + encodeURIComponent(serviceType + ": " + clientName) +
+            "&niche=" + encodeURIComponent(clientNiche) +
+            "&pain=" + encodeURIComponent(clientPain) +
+            "&clientChatId=" + encodeURIComponent(clientChatId);
+        fetch(SCRIPT_URL + urlParams, { method: "GET" })
+        .then(function() {
             typingIndicator.style.display = "none";
             var currentHour = new Date().getHours();
-            var finalMsg = "🔥 <b>Потрясающе, " + clientName + "! Ваша запись успешно подтверждена!</b><br><br>" +
-            "📅 <b>Дата и время:</b> " + dateTimeStr + " (МСК)<br>" +
-            "🎯 <b>Формат:</b> " + serviceType + "<br><br>";
-            
-            if (currentHour >= 22 || currentHour < 8) {
-                finalMsg += "Поскольку сейчас глубокая ночь, Кристина детально изучит вашу анкету и лично напишет вам в ЛС утром со ссылкой на Zoom. Хорошего отдыха!";
-            } else {
-                finalMsg += "Данные внесены в расписание. Кристина пришлет ссылку на Zoom в личные сообщения в течение 2-3 часов. Пожалуйста, держите уведомления включенными!";
-            }
+            var finalMsg = "🔥 Потрясающе, " + clientName + "! Ваша запись успешно подтверждена!<br><br>" +
+                "📅 Дата и время: " + dateTimeStr + " (МСК)<br>" +
+                "🎯 Формат: " + serviceType + "<br><br>" +
+                "Лина уже отправила вам чек-лист подтверждения в чат бота. Окно закроется автоматически...";
             appendMessage(finalMsg, "bot");
-        }).catch(function(err) {
+            setTimeout(function() { if (typeof tg !== 'undefined' && tg) tg.close(); }, 3500);
+        })
+        .catch(function(err) {
             typingIndicator.style.display = "none";
             appendMessage("❌ Ошибка связи с календарем. Кристина свяжется с вами вручную!", "bot");
             console.error(err);
