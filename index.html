@@ -83,7 +83,6 @@
             border: none;
         }
 
-        /* Интерактивный календарь */
         .calendar-section {
             display: none;
             flex-direction: column;
@@ -153,7 +152,6 @@
             text-decoration: line-through;
         }
 
-        /* Поле ввода текста */
         .input-container {
             display: none;
             width: 100%;
@@ -278,7 +276,7 @@
 </div>
 
 <div class="calendar-section" id="calendarBlock">
-    <div class="calendar-title">Dата встречи:</div>
+    <div class="calendar-title">Дата встречи:</div>
     <div class="days-row" id="daysRow"></div>
     <div class="calendar-title" style="margin-top:8px;">Свободное время (МСК):</div>
     <div class="slots-grid" id="slotsGrid"></div>
@@ -319,7 +317,9 @@
         } catch (e) {}
     }
 
-    const SCRIPT_URL = "google.com";
+    // ВАША РЕАЛЬНАЯ ССЫЛКА НА GOOGLE SCRIPT
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx4WtUvnOjqxoJ0wBqG5oLfxhNUUfk1uGxM92UhZMv8fVHHNk5pg-yUpLctuFWJqZpz/exec";
+    
     const chatContainer = document.getElementById('chat');
     const actionBlock = document.getElementById('actionBlock');
     const typingIndicator = document.getElementById('typing');
@@ -357,7 +357,6 @@
         
         setTimeout(() => {
             typingIndicator.style.display = "none";
-            // Вкратце рассказываем, что ждет клиента на сессии
             let introText = "";
             if (name.includes("ДИАГНОСТИКА")) {
                 introText = "🤖 На диагностике мы под микроскопом разберем вашу текущую воронку, найдем скрытые разрывы в конверсии и оцифруем точные места утечки вашей прибыли.";
@@ -373,7 +372,6 @@
             textInput.placeholder = "Ваше имя...";
             textInput.value = telegramFullName !== "Пользователь" ? telegramFullName : "";
             
-            // Создаем кнопку отправки в футере
             actionBlock.innerHTML = `<button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>`;
             actionBlock.style.display = "flex";
             window.scrollTo(0, document.body.scrollHeight);
@@ -413,7 +411,6 @@
                 actionBlock.style.display = "flex";
             } else if (currentStep === 3) {
                 clientPain = value;
-                // Все данные собраны, подгружаем свободное время из Яндекса
                 loadCalendarData();
             }
             window.scrollTo(0, document.body.scrollHeight);
@@ -491,6 +488,12 @@
         typingIndicator.style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
         
+        // Получаем ID чата клиента из Telegram
+        let clientChatId = "";
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            clientChatId = tg.initDataUnsafe.user.id.toString();
+        }
+
         const payload = {
             action: "bookSlot",
             type: serviceType,
@@ -499,10 +502,10 @@
             dateTime: dateTimeStr,
             title: `${serviceType}: ${clientName}`,
             niche: clientNiche,
-            pain: clientPain
+            pain: clientPain,
+            clientChatId: clientChatId
         };
         
-        // Передаем полную анкету в бэкенд Google
         fetch(SCRIPT_URL, {
             method: "POST",
             mode: "no-cors",
@@ -510,20 +513,20 @@
             body: JSON.stringify(payload)
         }).then(() => {
             typingIndicator.style.display = "none";
-            const currentHour = new Date().getHours();
-            const dateParts = dateTimeStr.split(' ');
             
-            let finalMsg = `🔥 <b>Потрясающе! Ваша запись успешно подтверждена!</b><br><br>` +
-                           `📅 <b>Дата:</b> ${dateParts[0]}<br>` +
-                           `⏰ <b>Время:</b> ${dateParts[1]} (МСК)<br>` +
-                           `🎯 <b>Формат:</b> ${serviceType}<br><br>`;
-                           
-            if (currentHour >= 22 || currentHour < 8) {
-                finalMsg += `Поскольку сейчас глубокая ночь, Кристина детально изучит вашу анкету и лично напишет вам в ЛС утром в первую очередь для отправки ссылки на Zoom. Хорошего отдыха!`;
-            } else {
-                finalMsg += `Данные внесены в расписание. Кристина свяжется с вами в личных сообщениях в течение 2-3 часов для подтверждения созвона. Пожалуйста, держите уведомления включенными!`;
-            }
+            const finalMsg = `🔥 <b>Потрясающе! Ваша запись успешно подтверждена!</b><br><br>` +
+                             `📅 <b>Дата:</b> ${dateTimeStr.split(' ')[0]}<br>` +
+                             `⏰ <b>Время:</b> ${dateTimeStr.split(' ')[1]} (МСК)<br>` +
+                             `🎯 <b>Формат:</b> ${serviceType}<br><br>` +
+                             `Данные внесены в расписание. Кристина свяжется с вами в личных сообщениях в течение 2-3 часов для подтверждения созвона. Пожалуйста, держите уведомления включенными!`;
+                             
             appendMessage(finalMsg, "bot");
+            
+            // Закрываем мини-приложение через 1.5 секунды, чтобы клиент увидел сообщение в обычном чате
+            setTimeout(() => {
+                if (tg) tg.close();
+            }, 1500);
+            
         }).catch(err => {
             typingIndicator.style.display = "none";
             appendMessage("❌ Ошибка связи с календарем. Данные сохранены, Кристина свяжется с вами вручную!", "bot");
