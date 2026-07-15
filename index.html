@@ -300,47 +300,39 @@
 </div>
 
 <script>
-    let tg = window.Telegram?.WebApp;
-    if (tg) {
-        try {
+    var SCRIPT_URL = "https://google.com";
+
+    var chatContainer = document.getElementById('chat');
+    var actionBlock = document.getElementById('actionBlock');
+    var typingIndicator = document.getElementById('typing');
+    var calendarBlock = document.getElementById('calendarBlock');
+    var inputBlock = document.getElementById('inputBlock');
+    var textInput = document.getElementById('textInput');
+    var daysRow = document.getElementById('daysRow');
+    var slotsGrid = document.getElementById('slotsGrid');
+
+    var userName = "из_ВК_или_поиска";
+    var telegramFullName = "Пользователь";
+    var clientChatId = ""; 
+
+    try {
+        var tg = window.Telegram?.WebApp;
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             tg.expand();
-            if (tg.colorScheme === 'light') {
-                document.documentElement.style.setProperty('--bg-color', '#f5f5f7');
-                document.documentElement.style.setProperty('--text-main', '#000000');
-                document.documentElement.style.setProperty('--text-muted', '#6e6e73');
-                document.documentElement.style.setProperty('--bot-bubble', '#ffffff');
-                document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.05)');
-            }
-        } catch (e) {}
-    }
-
-    const SCRIPT_URL = "https://google.com";
-
-    const chatContainer = document.getElementById('chat');
-    const actionBlock = document.getElementById('actionBlock');
-    const typingIndicator = document.getElementById('typing');
-    const calendarBlock = document.getElementById('calendarBlock');
-    const inputBlock = document.getElementById('inputBlock');
-const textInput = document.getElementById('textInput');
-const daysRow = document.getElementById('daysRow');
-const slotsGrid = document.getElementById('slotsGrid');
-let userName = "из_ВК_или_поиска";
-let telegramFullName = "Пользователь";
-let clientChatId = "";
-if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-const u = tg.initDataUnsafe.user;
-userName = u.username ? "@" + u.username : "скрыт";
-telegramFullName = (u.first_name || "" + " " + (u.last_name || "")).trim() || "Пользователь";
+            var u = tg.initDataUnsafe.user;
+            userName = u.username ? "@" + u.username : "скрыт";
+            telegramFullName = (u.first_name || "" + " " + (u.last_name || "")).trim() || "Пользователь";
 clientChatId = String(u.id);
 }
-let serviceType = "";
-let clientName = "";
-let clientNiche = "";
-let clientPain = "";
-let selectedDateStr = "";
-let busySlots = [];
-let currentStep = 0;
-const AVAILABLE_HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+} catch(e) {}
+var serviceType = "";
+var clientName = "";
+var clientNiche = "";
+var clientPain = "";
+var selectedDateStr = "";
+var busySlots = [];
+var currentStep = 0;
+var AVAILABLE_HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
 function startFlow(name, price) {
 serviceType = name + " — " + price;
 appendMessage(name + " (" + price + ")", "user");
@@ -349,10 +341,10 @@ typingIndicator.style.display = "block";
 window.scrollTo(0, document.body.scrollHeight);
 setTimeout(function() {
 typingIndicator.style.display = "none";
-let introText = "";
-if (name.includes("ДИАГНОСТИКА")) {
+var introText = "";
+if (name.indexOf("ДИАГНОСТИКА") !== -1) {
 introText = "🤖 На диагностике мы под микроскопом разберем вашу текущую воронку, найдем скрытые разрывы в конверсии и оцифруем точные места утечки вашей прибыли.";
-} else if (name.includes("РАЗБОР")) {
+} else if (name.indexOf("РАЗБОР") !== -1) {
 introText = "🤖 На персональном разборе мы полностью перепроектируем ваше позиционирование, упакуем смыслы продукта и выстроим логику воронки под вашу целевую аудиторию.";
 } else {
 introText = "🤖 На экспресс-консультации мы за 20 минут разберем ваш точечный запрос, определим вектор автоматизации и подберем необходимое решение.";
@@ -370,7 +362,7 @@ window.scrollTo(0, document.body.scrollHeight);
 }, 1200);
 }
 function handleInputSubmit() {
-const value = textInput.value.trim();
+var value = textInput.value.trim();
 if (!value) {
 alert("Пожалуйста, заполните поле!");
 return;
@@ -426,21 +418,25 @@ appendMessage("🤖 Спасибо за ответы! Слот-система Я
 calendarBlock.style.display = "flex";
 daysRow.innerHTML = "";
 for (let i = 0; i < 3; i++) {
-const d = new Date();
+var d = new Date();
 d.setDate(d.getDate() + i);
-const dateStr = d.toISOString().split('T')[0];
-const options = { weekday: 'short', month: 'short', day: 'numeric' };
-const label = d.toLocaleDateString('ru-RU', options);
-const btn = document.createElement('button');
+// Жёсткое ручное форматирование даты без split('T')
+var pad = function(num) { return (num < 10 ? '0' : '') + num; };
+var dateStr = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+var options = { weekday: 'short', month: 'short', day: 'numeric' };
+var label = d.toLocaleDateString('ru-RU', options);
+var btn = document.createElement('button');
 btn.classList.add('day-btn');
 if (i === 0) { btn.classList.add('active'); selectedDateStr = dateStr; }
 btn.innerText = label;
+(function(currentDateStr) {
 btn.onclick = function() {
 document.querySelectorAll('.day-btn').forEach(function(b) { b.classList.remove('active'); });
 btn.classList.add('active');
-selectedDateStr = dateStr;
-renderHours(dateStr);
+selectedDateStr = currentDateStr;
+renderHours(currentDateStr);
 };
+})(dateStr);
 daysRow.appendChild(btn);
 }
 renderHours(selectedDateStr);
@@ -448,9 +444,9 @@ renderHours(selectedDateStr);
 function renderHours(dateStr) {
 slotsGrid.innerHTML = "";
 AVAILABLE_HOURS.forEach(function(hour) {
-const fullDateTimeCheck = dateStr + " " + hour;
-const isBusy = busySlots.includes(fullDateTimeCheck);
-const btn = document.createElement('button');
+var fullDateTimeCheck = dateStr + " " + hour;
+var isBusy = busySlots.includes(fullDateTimeCheck);
+var btn = document.createElement('button');
 btn.classList.add('time-btn');
 btn.innerText = hour;
 if (isBusy) btn.disabled = true;
@@ -467,7 +463,7 @@ function bookSelectedSlot(dateTimeStr) {
 calendarBlock.style.display = "none";
 typingIndicator.style.display = "block";
 window.scrollTo(0, document.body.scrollHeight);
-const payload = {
+var payload = {
 action: "bookSlot",
 type: serviceType,
 fullName: clientName,
@@ -485,9 +481,9 @@ headers: { "Content-Type": "application/json" },
 body: JSON.stringify(payload)
 }).then(function() {
 typingIndicator.style.display = "none";
-const currentHour = new Date().getHours();
-const dateParts = dateTimeStr.split(' ');
-let finalMsg = "🔥 Потрясающе, " + clientName + "! Ваша запись успешно подтверждена!
+var currentHour = new Date().getHours();
+var dateParts = dateTimeStr.split(' ');
+var finalMsg = "🔥 Потрясающе, " + clientName + "! Ваша запись успешно подтверждена!
 
 " +
 "📅 Дата: " + dateParts[0] + "
@@ -510,7 +506,7 @@ console.error(err);
 });
 }
 function appendMessage(text, sender) {
-const msgDiv = document.createElement('div');
+var msgDiv = document.createElement('div');
 msgDiv.classList.add('message', sender);
 msgDiv.innerHTML = text;
 chatContainer.appendChild(msgDiv);
