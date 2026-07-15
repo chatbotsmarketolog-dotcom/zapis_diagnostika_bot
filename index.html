@@ -317,7 +317,8 @@
         } catch (e) {}
     }
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEb2kWoARzlqnx9y14_2wi53VE6hJZ1xHOMY3y0ndRRrYfgVmG2qwYC3Xoiv3ELSyn/exec";
+    // ВАША ССЫЛКА НА GOOGLE SCRIPT
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf8PlU8jLEZfqwaG5E5YVumjYfneMejnuto1MSEhXDYwfeQjWR2h20JvZX_053pDGV/exec";
     
     const chatContainer = document.getElementById('chat');
     const actionBlock = document.getElementById('actionBlock');
@@ -345,7 +346,6 @@
     let busySlots = [];
     let currentStep = 0;
     
-    // Строго с 10:00 до 18:00 с интервалом в 1 час
     const AVAILABLE_HOURS = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
 
     function startFlow(name, price, desc) {
@@ -424,7 +424,6 @@
             typingIndicator.style.display = "none";
             appendMessage("🤖 Спасибо за честные ответы! Теперь давайте подберем удобное время.<br><br>Рабочее время: <b>10:00 - 18:00 (МСК)</b><br>Длительность встречи: <b>1 час</b>", "bot");
             
-            // ПРОВЕРКА: Если сейчас в Москве после 14:00, начинаем показывать даты со следующего дня
             const now = new Date();
             const moscowHour = (now.getUTCHours() + 3) % 24;
             const startOffset = moscowHour >= 14 ? 1 : 0;
@@ -462,14 +461,27 @@
 
     function loadCalendarData() {
         typingIndicator.style.display = "block";
-        fetch(`${SCRIPT_URL}?action=getBusySlots`)
-            .then(res => res.json())
-            .then(data => {
-                busySlots = data;
-                renderHours(selectedDateStr);
+        
+        // ПРОВЕРКА: работает ли скрипт
+        fetch(SCRIPT_URL)
+            .then(res => res.text())
+            .then(text => {
+                console.log("Script response:", text);
+                // Теперь загружаем слоты
+                fetch(SCRIPT_URL + '?action=getBusySlots')
+                    .then(res => res.json())
+                    .then(data => {
+                        busySlots = data;
+                        renderHours(selectedDateStr);
+                    })
+                    .catch(err => {
+                        console.error("Load slots error:", err);
+                        busySlots = [];
+                        renderHours(selectedDateStr);
+                    });
             })
             .catch(err => {
-                console.error(err);
+                console.error("Script check error:", err);
                 busySlots = [];
                 renderHours(selectedDateStr);
             });
@@ -485,7 +497,6 @@
             const fullDateTimeCheck = `${dateStr} ${hour}`;
             const isBusy = busySlots.includes(fullDateTimeCheck);
             
-            // БЛОКИРОВКА ПРОШЕДШЕГО ВРЕМЕНИ СЕГОДНЯ
             const [h, m] = hour.split(':').map(Number);
             const isPast = (dateStr === today) && (h < moscowHour || (h === moscowHour && m <= now.getMinutes()));
             
@@ -533,14 +544,15 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
-        }).then(() => {
+        })
+        .then(response => {
+            console.log("Booking response:", response);
             typingIndicator.style.display = "none";
             
             const [datePart, timePart] = dateTimeStr.split(' ');
             const [year, month, day] = datePart.split('-');
             const formattedDate = `${day}.${month}.${year}`;
             
-            // ОПРЕДЕЛЕНИЕ ДНЯ ИЛИ НОЧИ (по МСК, UTC+3)
             const nowCheck = new Date();
             const currentMoscowHour = (nowCheck.getUTCHours() + 3) % 24;
             const isNight = currentMoscowHour >= 22 || currentMoscowHour < 8;
@@ -561,11 +573,11 @@
             setTimeout(() => {
                 if (tg) tg.close();
             }, 1500);
-            
-        }).catch(err => {
+        })
+        .catch(err => {
             typingIndicator.style.display = "none";
             appendMessage("❌ Ошибка связи с календарем. Данные сохранены, Кристина свяжется с вами вручную!", "bot");
-            console.error(err);
+            console.error("Booking error:", err);
         });
     }
 
