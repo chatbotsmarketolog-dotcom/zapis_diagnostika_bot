@@ -24,6 +24,7 @@
             flex-direction: column;
             min-height: 92vh;
             justify-content: space-between;
+            overflow-x: hidden;
         }
         .header { text-align: center; padding: 10px 0 20px 0; }
         .header h1 {
@@ -97,7 +98,7 @@
     var tg = window.Telegram?.WebApp;
     if (tg) { try { tg.expand(); } catch (e) {} }
 
-    // ТВОЙ ТОЧНЫЙ АДРЕС БЭКЕНДА GOOGLE SCRIPT
+    // ТВОЯ НОВАЯ АКТУАЛЬНАЯ ССЫЛКА НА ДЕПЛОЙ С МЕТКОЙ v=9.0
     var SCRIPT_URL = "https://google.com";
 
     var chatContainer = document.getElementById("chat");
@@ -115,7 +116,7 @@
     }
 
     function sendServiceToBot(serviceName) {
-        // Выводим инструкцию по ручному закрытию прямо на экране сайта
+        // Рисуем сообщение-инструкцию для ручного закрытия
         var botReplyDiv = document.createElement("div");
         botReplyDiv.style.marginTop = "15px";
         botReplyDiv.classList.add("message");
@@ -124,8 +125,8 @@
 
         if (actionBlock) actionBlock.style.display = "none";
 
-        // Фоновый GET-запрос к скрипту (100% обход CORS)
-        var urlParams = "?action=startOpros" +
+        // Посылаем GET-сигнал бэкенду
+        var urlParams = "&action=startOpros" +
                         "&type=" + encodeURIComponent(serviceName) +
                         "&fullName=" + encodeURIComponent(telegramFullName) +
                         "&userName=" + encodeURIComponent(userName) +
