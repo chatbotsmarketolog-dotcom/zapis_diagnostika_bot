@@ -23,7 +23,6 @@
             flex-direction: column;
             min-height: 92vh;
             justify-content: space-between;
-            overflow-x: hidden;
         }
         .header { text-align: center; padding: 10px 0 20px 0; }
         .header h1 {
@@ -88,7 +87,7 @@
         <span>По косточкам разбираем ваше позиционирование, продукт и психологию вашего клиента.</span>
     </button>
     <button class="btn" onclick="sendToBot('consult')">
-        <b>ПЕРСОНАЛЬНЫЙ КОНСУЛЬТАЦИЯ (500 ₽)</b>
+        <b>ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ (500 ₽)</b>
         <span>В течение 20 минут разбираюсь, какая услуга вам может быть полезна именно сейчас.</span>
     </button>
 </div>
@@ -100,7 +99,7 @@
     function sendToBot(command) {
         try {
             if (tg) {
-                // Прямой нативный вызов команды — 100% закроет шторку и отправит импульс в чат!
+                // Железобетонный вызов ссылки — перенаправляет в чат и закрывает приложение
                 tg.openTelegramLink("https://t.me" + command);
                 tg.close();
             }
