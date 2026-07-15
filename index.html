@@ -285,15 +285,15 @@
 </div>
 
 <div class="footer-action" id="actionBlock">
-    <button class="btn" onclick="startFlow('ДИАГНОСТИКА', '3 000 РУБ', 'узнать, где моя текущая воронка сливает клиентов')">
+    <button class="btn" onclick="startFlow('ДИАГНОСТИКА', '3 000 ₽')">
         <b>ДИАГНОСТИКА (3 000 ₽)</b>
         <span>Узнать, где моя текущая воронка тайно сливает клиентов.</span>
     </button>
-    <button class="btn" onclick="startFlow('ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА', '2 500 РУБ', 'по косточкам разбираем ваше позиционирование, продукт и психологию')">
+    <button class="btn" onclick="startFlow('ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА', '2 500 ₽')">
         <b>ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА (2 500 ₽)</b>
         <span>По косточкам разбираем ваше позиционирование, продукт и психологию вашего клиента, чтобы создать систему под задачу, а не для красоты.</span>
     </button>
-    <button class="btn" onclick="startFlow('ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ', '500 РУБ', 'в течении 20 минут разбираюсь какая услуга полезна')">
+    <button class="btn" onclick="startFlow('ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ', '500 ₽')">
         <b>ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ (500 ₽)</b>
         <span>В течение 20 минут разбираюсь, какая услуга вам может быть полезна именно сейчас, и отвечаю на ваши вопросы.</span>
     </button>
@@ -301,34 +301,26 @@
 
 <script>
     let tg = window.Telegram?.WebApp;
-    if (tg) {
-        try {
-            tg.expand();
-            if (tg.colorScheme === 'light') {
-                document.documentElement.style.setProperty('--bg-color', '#f5f5f7');
-                document.documentElement.style.setProperty('--text-main', '#000000');
-                document.documentElement.style.setProperty('--text-muted', '#6e6e73');
-                document.documentElement.style.setProperty('--bot-bubble', '#ffffff');
-                document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.05)');
-            }
-        } catch (e) {}
-    }
+    if (tg) { try { tg.expand(); } catch (e) {} }
 
+    // АКТУАЛЬНЫЙ АДРЕС ВАШЕГО GOOGLE SCRIPT БЭКЕНДА
     const SCRIPT_URL = "https://google.com";
 
     const chatContainer = document.getElementById('chat');
-const actionBlock = document.getElementById('actionBlock');
-const typingIndicator = document.getElementById('typing');
-const calendarBlock = document.getElementById('calendarBlock');
-const inputBlock = document.getElementById('inputBlock');
-const textInput = document.getElementById('textInput');
-const daysRow = document.getElementById('daysRow');
-const slotsGrid = document.getElementById('slotsGrid');
-let userName = "из_ВК_или_поиска";
-let telegramFullName = "Пользователь";
-let clientChatId = "";
-if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-const u = tg.initDataUnsafe.user;
+    const actionBlock = document.getElementById('actionBlock');
+    const typingIndicator = document.getElementById('typing');
+    const calendarBlock = document.getElementById('calendarBlock');
+    const inputBlock = document.getElementById('inputBlock');
+    const textInput = document.getElementById('textInput');
+    const daysRow = document.getElementById('daysRow');
+    const slotsGrid = document.getElementById('slotsGrid');
+
+    let userName = "из_ВК_или_поиска";
+    let telegramFullName = "Пользователь";
+    let clientChatId = ""; 
+
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const u = tg.initDataUnsafe.user;
 userName = u.username ? @${u.username} : "скрыт";
 telegramFullName = ${u.first_name || ''} ${u.last_name || ''}.trim() || "Пользователь";
 clientChatId = String(u.id);
@@ -341,9 +333,9 @@ let selectedDateStr = "";
 let busySlots = [];
 let currentStep = 0;
 const AVAILABLE_HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
-function startFlow(name, price, desc) {
-serviceType = ${name} — ${price};
-appendMessage(${name} (${price}), "user");
+function startFlow(name, price) {
+serviceType = name + " (" + price + ")";
+appendMessage(name + " — " + price, "user");
 actionBlock.style.display = "none";
 typingIndicator.style.display = "block";
 window.scrollTo(0, document.body.scrollHeight);
@@ -357,12 +349,14 @@ introText = "🤖 На персональном разборе мы полнос
 } else {
 introText = "🤖 На экспресс-консультации мы за 20 минут разберем ваш точечный запрос, определим вектор автоматизации и подберем необходимое решение.";
 }
-appendMessage(${introText}<br><br>Перед тем как открыть общий календарь Яндекса, давайте познакомимся. <b>Как я могу к вам обращаться? Напишите ваше имя:</b>, "bot");
+appendMessage(introText + "
+
+Перед тем как открыть общий календарь Яндекса, давайте познакомимся. Как я могу к вам обращаться? Напишите ваше имя:", "bot");
 currentStep = 1;
 inputBlock.style.display = "block";
 textInput.placeholder = "Ваше имя...";
 textInput.value = telegramFullName !== "Пользователь" ? telegramFullName : "";
-actionBlock.innerHTML = <button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>;
+actionBlock.innerHTML = 'Далее ➔';
 actionBlock.style.display = "flex";
 window.scrollTo(0, document.body.scrollHeight);
 }, 1200);
@@ -383,19 +377,19 @@ typingIndicator.style.display = "none";
 textInput.value = "";
 if (currentStep === 1) {
 clientName = value;
-appendMessage(Приятно познакомиться, ${clientName}! Уточните, пожалуйста, <b>какая у вас ниша бизнеса или инфобизнеса?</b>, "bot");
+appendMessage("Приятно познакомиться, " + clientName + "! Уточните, пожалуйста, какая у вас ниша бизнеса или инфобизнеса?", "bot");
 currentStep = 2;
 inputBlock.style.display = "block";
 textInput.placeholder = "Ваша ниша...";
-actionBlock.innerHTML = <button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>;
+actionBlock.innerHTML = 'Далее ➔';
 actionBlock.style.display = "flex";
 } else if (currentStep === 2) {
 clientNiche = value;
-appendMessage(Принято. И финальный вопрос: <b>что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?</b>, "bot");
+appendMessage("Принято. И финальный вопрос: что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?", "bot");
 currentStep = 3;
 inputBlock.style.display = "block";
 textInput.placeholder = "Что мешает/тормозит...";
-actionBlock.innerHTML = <button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>;
+actionBlock.innerHTML = 'Далее ➔';
 actionBlock.style.display = "flex";
 } else if (currentStep === 3) {
 clientPain = value;
@@ -406,7 +400,7 @@ window.scrollTo(0, document.body.scrollHeight);
 }
 function loadCalendarData() {
 typingIndicator.style.display = "block";
-fetch(${SCRIPT_URL}?action=getBusySlots)
+fetch(SCRIPT_URL + "?action=getBusySlots")
 .then(res => res.json())
 .then(data => {
 busySlots = data;
@@ -426,7 +420,7 @@ daysRow.innerHTML = "";
 for (let i = 0; i < 3; i++) {
 const d = new Date();
 d.setDate(d.getDate() + i);
-const dateStr = d.toISOString().split('T')[0]; // Жесткая фиксация строки даты!
+const dateStr = d.toISOString().split('T')[0];
 const options = { weekday: 'short', month: 'short', day: 'numeric' };
 const label = d.toLocaleDateString('ru-RU', options);
 const btn = document.createElement('button');
@@ -446,7 +440,7 @@ renderHours(selectedDateStr);
 function renderHours(dateStr) {
 slotsGrid.innerHTML = "";
 AVAILABLE_HOURS.forEach(hour => {
-const fullDateTimeCheck = ${dateStr} ${hour};
+const fullDateTimeCheck = dateStr + " " + hour;
 const isBusy = busySlots.includes(fullDateTimeCheck);
 const btn = document.createElement('button');
 btn.classList.add('time-btn');
@@ -471,7 +465,7 @@ type: serviceType,
 fullName: clientName,
 userName: userName,
 dateTime: dateTimeStr,
-title: ${serviceType}: ${clientName},
+title: serviceType + ": " + clientName,
 niche: clientNiche,
 pain: clientPain,
 clientChatId: clientChatId
@@ -485,14 +479,20 @@ body: JSON.stringify(payload)
 typingIndicator.style.display = "none";
 const currentHour = new Date().getHours();
 const dateParts = dateTimeStr.split(' ');
-let finalMsg = 🔥 <b>Потрясающе, ${clientName}! Ваша запись успешно подтверждена!</b><br><br> +
-📅 <b>Дата:</b> ${dateParts[0]}<br> +
-⏰ <b>Время:</b> ${dateParts[1]} (МСК)<br> +
-🎯 <b>Формат:</b> ${serviceType}<br><br>;
+let finalMsg = "🔥 Потрясающе, " + clientName + "! Ваша запись успешно подтверждена!
+
+" +
+"📅 Дата: " + dateParts[0] + "
+" +
+"⏰ Время: " + dateParts[1] + " (МСК)
+" +
+"🎯 Формат: " + serviceType + "
+
+";
 if (currentHour >= 22 || currentHour < 8) {
-finalMsg += Поскольку сейчас глубокая ночь, Кристина детально изучит вашу анкету и лично напишет вам в ЛС утром со ссылкой на Zoom. Хорошего отдыха!;
+finalMsg += "Поскольку сейчас глубокая ночь, Кристина детально изучит вашу анкету и лично напишет вам в ЛС утром со ссылкой на Zoom. Хорошего отдыха!";
 } else {
-finalMsg += Данные внесены в расписание. Кристина пришлет ссылку на Zoom в личные сообщения в течение 2-3 часов. Пожалуйста, держите уведомления включенными!;
+finalMsg += "Данные внесены в расписание. Кристина пришлет ссылку на Zoom в личные сообщения в течение 2-3 часов. Пожалуйста, держите уведомления включенными!";
 }
 appendMessage(finalMsg, "bot");
 }).catch(err => {
