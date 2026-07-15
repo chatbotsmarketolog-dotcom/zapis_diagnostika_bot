@@ -117,11 +117,13 @@
                 document.documentElement.style.setProperty('--bot-bubble', '#ffffff');
                 document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.05)');
             }
-        } catch (e) {}
+        } catch (e) {
+            console.error("Telegram WebApp error:", e);
+        }
     }
 
-    // ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ НА GOOGLE SCRIPT (заканчивается на /exec)
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf8PlU8jLEZfqwaG5E5YVumjYfneMejnuto1MSEhXDYwfeQjWR2h20JvZX_053pDGV/exec";
+    // ВАША ССЫЛКА НА GOOGLE SCRIPT
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqmS63uARlrj-6Mn_pywtED8Ju-J4OvIeyjNKVihB2rJcyLV26pCMfebBHVKrqKn5K/exec";
     
     const chatContainer = document.getElementById('chat');
     const actionBlock = document.getElementById('actionBlock');
@@ -134,11 +136,15 @@
     
     let userName = "из_ВК_или_поиска";
     let telegramFullName = "Пользователь";
+    let clientChatId = "";
     
+    // ПОЛУЧАЕМ ДАННЫЕ ИЗ TELEGRAM
     if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const u = tg.initDataUnsafe.user;
         userName = u.username ? `@${u.username}` : "скрыт";
         telegramFullName = `${u.first_name || ''} ${u.last_name || ''}`.trim() || "Пользователь";
+        clientChatId = u.id ? u.id.toString() : "";
+        console.log("Client Chat ID:", clientChatId);
     }
     
     let serviceType = "";
@@ -149,7 +155,7 @@
     let busySlots = [];
     let currentStep = 0;
     
-    // Строго с 10:00 до 18:00
+    // Слоты с 10:00 до 18:00
     const AVAILABLE_HOURS = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
 
     function startFlow(name, price, desc) {
@@ -163,7 +169,7 @@
             typingIndicator.style.display = "none";
             let introText = "";
             if (name.includes("ДИАГНОСТИКА")) {
-                introText = "🤖 На диагностике мы под микроскопом разберем вашу текущую воронку, найдем скрытые разрывы в конверсии и оцифруем точные места утечки вашей прибыли.";
+                introText = " На диагностике мы под микроскопом разберем вашу текущую воронку, найдем скрытые разрывы в конверсии и оцифруем точные места утечки вашей прибыли.";
             } else if (name.includes("РАЗБОР")) {
                 introText = "🤖 На персональном разборе мы полностью перепроектируем ваше позиционирование, упакуем смыслы продукта и выстроим логику воронки под вашу целевую аудиторию.";
             } else {
@@ -229,7 +235,7 @@
                 renderCalendar();
             })
             .catch(err => {
-                console.error(err);
+                console.error("Load calendar error:", err);
                 busySlots = [];
                 renderCalendar();
             });
@@ -237,11 +243,11 @@
 
     function renderCalendar() {
         typingIndicator.style.display = "none";
-        appendMessage("🤖 Спасибо за честные ответы! Слот-система Яндекса синхронизирована. Выберите удобный день и время для встречи:", "bot");
+        appendMessage(" Спасибо за честные ответы! Слот-система Яндекса синхронизирована. Выберите удобный день и время для встречи:", "bot");
         calendarBlock.style.display = "flex";
         daysRow.innerHTML = "";
         
-        // ПРОВЕРКА ВРЕМЕНИ: Если в Москве >= 15:00, начинаем показывать дни со следующего (i = 1)
+        // Если в Москве >= 15:00, начинаем со следующего дня
         const now = new Date();
         const moscowHour = (now.getUTCHours() + 3) % 24;
         const startOffset = moscowHour >= 15 ? 1 : 0;
@@ -281,7 +287,6 @@
             btn.classList.add('time-btn');
             btn.innerText = hour;
             
-            // Если занято - кнопка неактивна и зачеркнута (как в вашем CSS)
             if (isBusy) {
                 btn.disabled = true;
             } else {
@@ -301,11 +306,16 @@
         typingIndicator.style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
         
-        // Получаем ID чата клиента для отправки сообщения в классический Telegram
-        let clientChatId = "";
-        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            clientChatId = tg.initDataUnsafe.user.id.toString();
-        }
+        console.log("Booking data:", {
+            serviceType: serviceType,
+            clientName: clientName,
+            telegramFullName: telegramFullName,
+            userName: userName,
+            dateTime: dateTimeStr,
+            niche: clientNiche,
+            pain: clientPain,
+            clientChatId: clientChatId
+        });
 
         const payload = {
             action: "bookSlot",
@@ -316,18 +326,21 @@
             title: `${serviceType}: ${clientName}`,
             niche: clientNiche,
             pain: clientPain,
-            clientChatId: clientChatId // Передаем ID для отправки истории в бот
+            clientChatId: clientChatId
         };
         
         fetch(SCRIPT_URL, {
             method: "POST",
-            mode: "no-cors",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
-        }).then(() => {
+        })
+        .then(response => response.text())
+        .then(result => {
+            console.log("Server response:", result);
             typingIndicator.style.display = "none";
-            const currentHour = new Date().getHours(); // Локальное время устройства для простоты проверки "ночи"
+            
             const dateParts = dateTimeStr.split(' ');
+            const currentHour = new Date().getHours();
             
             let finalMsg = `🔥 <b>Потрясающе! Ваша запись успешно подтверждена!</b><br><br>` +
                            `📅 <b>Дата:</b> ${dateParts[0]}<br>` +
@@ -342,15 +355,14 @@
             
             appendMessage(finalMsg, "bot");
             
-            // Закрываем мини-апп, чтобы клиент увидел сообщение в обычном чате
             setTimeout(() => {
                 if (tg) tg.close();
             }, 1500);
-            
-        }).catch(err => {
+        })
+        .catch(err => {
             typingIndicator.style.display = "none";
+            console.error("Booking error:", err);
             appendMessage("❌ Ошибка связи с календарем. Данные сохранены, Кристина свяжется с вами вручную!", "bot");
-            console.error(err);
         });
     }
 
