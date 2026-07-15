@@ -301,24 +301,33 @@
 
 <script>
     let tg = window.Telegram?.WebApp;
-    if (tg) { try { tg.expand(); } catch (e) {} }
+    if (tg) {
+        try {
+            tg.expand();
+            if (tg.colorScheme === 'light') {
+                document.documentElement.style.setProperty('--bg-color', '#f5f5f7');
+                document.documentElement.style.setProperty('--text-main', '#000000');
+                document.documentElement.style.setProperty('--text-muted', '#6e6e73');
+                document.documentElement.style.setProperty('--bot-bubble', '#ffffff');
+                document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.05)');
+            }
+        } catch (e) {}
+    }
 
     const SCRIPT_URL = "https://google.com";
 
     const chatContainer = document.getElementById('chat');
-    const actionBlock = document.getElementById('actionBlock');
-    const typingIndicator = document.getElementById('typing');
-    const calendarBlock = document.getElementById('calendarBlock');
-    const inputBlock = document.getElementById('inputBlock');
-    const textInput = document.getElementById('textInput');
-    const daysRow = document.getElementById('daysRow');
-    const slotsGrid = document.getElementById('slotsGrid');
-
-    let userName = "из_ВК_или_поиска";
-    let telegramFullName = "Пользователь";
-    let clientChatId = ""; 
-
-    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+const actionBlock = document.getElementById('actionBlock');
+const typingIndicator = document.getElementById('typing');
+const calendarBlock = document.getElementById('calendarBlock');
+const inputBlock = document.getElementById('inputBlock');
+const textInput = document.getElementById('textInput');
+const daysRow = document.getElementById('daysRow');
+const slotsGrid = document.getElementById('slotsGrid');
+let userName = "из_ВК_или_поиска";
+let telegramFullName = "Пользователь";
+let clientChatId = "";
+if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
 const u = tg.initDataUnsafe.user;
 userName = u.username ? @${u.username} : "скрыт";
 telegramFullName = ${u.first_name || ''} ${u.last_name || ''}.trim() || "Пользователь";
@@ -378,6 +387,7 @@ appendMessage(Приятно познакомиться, ${clientName}! Уточ
 currentStep = 2;
 inputBlock.style.display = "block";
 textInput.placeholder = "Ваша ниша...";
+actionBlock.innerHTML = <button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>;
 actionBlock.style.display = "flex";
 } else if (currentStep === 2) {
 clientNiche = value;
@@ -385,6 +395,7 @@ appendMessage(Принято. И финальный вопрос: <b>что им
 currentStep = 3;
 inputBlock.style.display = "block";
 textInput.placeholder = "Что мешает/тормозит...";
+actionBlock.innerHTML = <button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>;
 actionBlock.style.display = "flex";
 } else if (currentStep === 3) {
 clientPain = value;
@@ -415,7 +426,7 @@ daysRow.innerHTML = "";
 for (let i = 0; i < 3; i++) {
 const d = new Date();
 d.setDate(d.getDate() + i);
-const dateStr = d.toISOString().split('T')[0]; // Исправлено: берем только саму строку даты
+const dateStr = d.toISOString().split('T')[0]; // Жесткая фиксация строки даты!
 const options = { weekday: 'short', month: 'short', day: 'numeric' };
 const label = d.toLocaleDateString('ru-RU', options);
 const btn = document.createElement('button');
@@ -473,10 +484,10 @@ body: JSON.stringify(payload)
 }).then(() => {
 typingIndicator.style.display = "none";
 const currentHour = new Date().getHours();
-const timeParts = dateTimeStr.split(' ');
+const dateParts = dateTimeStr.split(' ');
 let finalMsg = 🔥 <b>Потрясающе, ${clientName}! Ваша запись успешно подтверждена!</b><br><br> +
-📅 <b>Дата:</b> ${timeParts[0]}<br> +
-⏰ <b>Время:</b> ${timeParts[1]} (МСК)<br> +
+📅 <b>Дата:</b> ${dateParts[0]}<br> +
+⏰ <b>Время:</b> ${dateParts[1]} (МСК)<br> +
 🎯 <b>Формат:</b> ${serviceType}<br><br>;
 if (currentHour >= 22 || currentHour < 8) {
 finalMsg += Поскольку сейчас глубокая ночь, Кристина детально изучит вашу анкету и лично напишет вам в ЛС утром со ссылкой на Zoom. Хорошего отдыха!;
