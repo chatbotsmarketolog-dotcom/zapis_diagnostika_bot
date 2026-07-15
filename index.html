@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кристина.AI | Выбор услуги</title>
+    <!-- Официальный скрипт Telegram Web Apps -->
+    <script src="https://telegram.org"></script>
     <style>
         :root {
             --bg-color: #0d0e12;
@@ -44,28 +46,22 @@
             border-bottom-left-radius: 4px;
         }
         .footer-action { width: 100%; padding-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
-        
-        /* Стилизация нативных ссылок под белые премиум-кнопки */
-        .btn-link {
+        .btn {
             background: #ffffff;
             color: #000000;
-            text-decoration: none;
+            border: none;
             padding: 16px;
             border-radius: 14px;
             font-size: 14px;
             font-weight: 600;
-            display: block;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
             line-height: 1.3;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-            box-sizing: border-box;
         }
-        .btn-link b {
-            display: block;
-            font-size: 14px;
-            color: #000000;
-        }
-        .btn-link span { display: block; font-size: 11px; font-weight: 400; color: #666; margin-top: 4px; }
-        .btn-link:active { transform: scale(0.98); }
+        .btn span { display: block; font-size: 11px; font-weight: 400; color: #666; margin-top: 4px; }
+        .btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
@@ -82,20 +78,36 @@
 </div>
 
 <div class="footer-action">
-    <!-- Нативный протокол Telegram для безупречного старта сценариев опроса -->
-    <a href="tg://resolve?domain=diagnostika_kris_bot&start=diag" class="btn-link">
+    <button class="btn" onclick="sendToBot('diag')">
         <b>ДИАГНОСТИКА (3 000 ₽)</b>
         <span>Узнать, где моя текущая воронка тайно сливает клиентов.</span>
-    </a>
-    <a href="tg://resolve?domain=diagnostika_kris_bot&start=razbor" class="btn-link">
+    </button>
+    <button class="btn" onclick="startFlow('ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА', '2 500 ₽')">
         <b>ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА (2 500 ₽)</b>
         <span>По косточкам разбираем ваше позиционирование, продукт и психологию вашего клиента.</span>
-    </a>
-    <a href="tg://resolve?domain=diagnostika_kris_bot&start=consult" class="btn-link">
+    </button>
+    <button class="btn" onclick="startFlow('ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ', '500 ₽')">
         <b>ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ (500 ₽)</b>
         <span>В течение 20 минут разбираюсь, какая услуга вам может быть полезна именно сейчас.</span>
-    </a>
+    </button>
 </div>
 
+<script>
+    var tg = window.Telegram?.WebApp;
+    if (tg) { try { tg.expand(); } catch (e) {} }
+
+    function sendToBot(command) {
+        try {
+            if (tg) {
+                // Официальный метод API Telegram для открытия глубоких ссылок без блокировок
+                tg.openTelegramLink("https://t.me" + command);
+                // Мягко сворачиваем шторку
+                tg.close();
+            }
+        } catch (e) {
+            if (tg) tg.close();
+        }
+    }
+</script>
 </body>
 </html>
