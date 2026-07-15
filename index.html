@@ -173,8 +173,8 @@
 </div>
 
 <script>
-    // ТВОЙ НОВЫЙ АКТУАЛЬНЫЙ АДРЕС БЭКЕНДА
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC2gX91i_RJe9By3C6uezk28puRhfRLfx9dbCiXxb1rCnIs0-KGjBg-yVLA8JqN1XY/exec";
+    // ДОБАВИЛИ ?v=3.0 ДЛЯ ПРИНУДИТЕЛЬНОГО СБРОСА КЭША НА СЕРВЕРАХ
+    var SCRIPT_URL = "https://google.com";
 
     var chatContainer = document.getElementById("chat");
     var actionBlock = document.getElementById("actionBlock");
@@ -196,7 +196,7 @@
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 var u = tg.initDataUnsafe.user;
                 userName = u.username ? "@" + u.username : "скрыт";
-                telegramFullName = ((u.first_name || "") + " " + (u.last_name || "")).trim() || "Пользователь";
+                telegramFullName = (u.first_name || "" + " " + (u.last_name || "")).trim() || "Пользователь";
                 clientChatId = String(u.id); 
             }
         }
@@ -223,163 +223,164 @@
             typingIndicator.style.display = "none";
             var introText = "";
             if (name.indexOf("ДИАГНОСТИКА") !== -1) {
-                introText = "🤖 На диагностике мы под микроскопом разберем вашу текущую воронку, найдем скрытые разрывы в конверсии и оцифруем точные места утечки вашей прибыли.";
-            } else if (name.indexOf("РАЗБОР") !== -1) {
-                introText = "🤖 На персональном разборе мы полностью перепроектируем ваше позиционирование, упакуем смыслы продукта и выстроим логику воронки под вашу целевую аудиторию.";
-            } else {
-                introText = "🤖 На экспресс-консультации мы за 20 минут разберем ваш точечный запрос, определим вектор автоматизации и подберем необходимое решение.";
-            }
-            appendMessage(introText + "<br><br>Перед тем как открыть общий календарь Яндекса, давайте познакомимся. Как я могу к вам обращаться? Напишите ваше имя:", "bot");
-            currentStep = 1;
-            inputBlock.style.display = "block";
-            textInput.placeholder = "Ваше имя...";
-            textInput.value = telegramFullName !== "Пользователь" ? telegramFullName : "";
-            actionBlock.innerHTML = '<button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>';
-            actionBlock.style.display = "flex";
-            window.scrollTo(0, document.body.scrollHeight);
-        }, 1000);
-    }
+introText = "🤖 На диагностике мы под микроскопом разберем вашу текущую воронку, найдем скрытые разрывы в конверсии и оцифруем точные места утечки вашей прибыли.";
+} else if (name.indexOf("РАЗБОР") !== -1) {
+introText = "🤖 На персональном разборе мы полностью перепроектируем ваше позиционирование, упакуем смыслы продукта и выстроим логику воронки под вашу целевую аудиторию.";
+} else {
+introText = "🤖 На экспресс-консультации мы за 20 минут разберем ваш точечный запрос, определим вектор автоматизации и подберем необходимое решение.";
+}
+appendMessage(introText + "
 
-    function handleInputSubmit() {
-        var value = textInput.value.trim();
-        if (!value) { alert("Пожалуйста, введите ответ!"); return; }
-        appendMessage(value, "user");
-        inputBlock.style.display = "none";
-        actionBlock.style.display = "none";
-        typingIndicator.style.display = "block";
-        window.scrollTo(0, document.body.scrollHeight);
-        setTimeout(function() {
-            typingIndicator.style.display = "none";
-            textInput.value = "";
-            if (currentStep === 1) {
-                clientName = value;
-                appendMessage("Приятно познакомиться, " + clientName + "! Уточните, пожалуйста, какая у вас ниша бизнеса или инфобизнеса?", "bot");
-                currentStep = 2;
-                inputBlock.style.display = "block";
-                textInput.placeholder = "Ваша ниша...";
-                actionBlock.innerHTML = '<button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>';
-                actionBlock.style.display = "flex";
-            } else if (currentStep === 2) {
-                clientNiche = value;
-                appendMessage("Принято. И финальный вопрос: что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?", "bot");
-                currentStep = 3;
-                inputBlock.style.display = "block";
-                textInput.placeholder = "Что мешает/тормозит...";
-                actionBlock.innerHTML = '<button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>';
-                actionBlock.style.display = "flex";
-            } else if (currentStep === 3) {
-                clientPain = value;
-                loadCalendarData();
-            }
-            window.scrollTo(0, document.body.scrollHeight);
-        }, 1000);
-    }
+Перед тем как открыть общий календарь Яндекса, давайте познакомимся. Как я могу к вам обращаться? Напишите ваше имя:", "bot");
+currentStep = 1;
+inputBlock.style.display = "block";
+textInput.placeholder = "Ваше имя...";
+textInput.value = telegramFullName !== "Пользователь" ? telegramFullName : "";
+actionBlock.innerHTML = 'Далее ➔';
+actionBlock.style.display = "flex";
+window.scrollTo(0, document.body.scrollHeight);
+}, 1000);
+}
+function handleInputSubmit() {
+var value = textInput.value.trim();
+if (!value) { alert("Пожалуйста, введите ответ!"); return; }
+appendMessage(value, "user");
+inputBlock.style.display = "none";
+actionBlock.style.display = "none";
+typingIndicator.style.display = "block";
+window.scrollTo(0, document.body.scrollHeight);
+setTimeout(function() {
+typingIndicator.style.display = "none";
+textInput.value = "";
+if (currentStep === 1) {
+clientName = value;
+appendMessage("Приятно познакомиться, " + clientName + "! Уточните, пожалуйста, какая у вас ниша бизнеса или инфобизнеса?", "bot");
+currentStep = 2;
+inputBlock.style.display = "block";
+textInput.placeholder = "Ваша ниша...";
+actionBlock.innerHTML = 'Далее ➔';
+actionBlock.style.display = "flex";
+} else if (currentStep === 2) {
+clientNiche = value;
+appendMessage("Принято. И финальный вопрос: что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?", "bot");
+currentStep = 3;
+inputBlock.style.display = "block";
+textInput.placeholder = "Что мешает/тормозит...";
+actionBlock.innerHTML = 'Далее ➔';
+actionBlock.style.display = "flex";
+} else if (currentStep === 3) {
+clientPain = value;
+loadCalendarData();
+}
+window.scrollTo(0, document.body.scrollHeight);
+}, 1000);
+}
+function loadCalendarData() {
+typingIndicator.style.display = "block";
+fetch(SCRIPT_URL + "&action=getBusySlots")
+.then(function(res) { return res.json(); })
+.then(function(data) { busySlots = data; renderCalendar(); })
+.catch(function(err) { console.error(err); busySlots = []; renderCalendar(); });
+}
+function renderCalendar() {
+typingIndicator.style.display = "none";
+appendMessage("🤖 Спасибо за ответы! Слот-система Яндекса синхронизирована. Выберите удобный день и время для встречи:", "bot");
+calendarBlock.style.display = "flex";
+daysRow.innerHTML = "";
+for (var i = 0; i < 3; i++) {
+var d = new Date();
+d.setDate(d.getDate() + i);
+var pad = function(num) { return (num < 10 ? '0' : '') + num; };
+var dateStr = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+var options = { weekday: 'short', month: 'short', day: 'numeric' };
+var label = d.toLocaleDateString('ru-RU', options);
+var btn = document.createElement('button');
+btn.classList.add('day-btn');
+if (i === 0) { btn.classList.add('active'); selectedDateStr = dateStr; }
+btn.innerText = label;
+(function(currentDateStr) {
+btn.onclick = function() {
+document.querySelectorAll('.day-btn').forEach(function(b) { b.classList.remove('active'); });
+btn.classList.add('active');
+selectedDateStr = currentDateStr;
+renderHours(currentDateStr);
+};
+})(dateStr);
+daysRow.appendChild(btn);
+}
+renderHours(selectedDateStr);
+}
+function renderHours(dateStr) {
+slotsGrid.innerHTML = "";
+var now = new Date();
+var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+var moscowNow = new Date(utc + (3600000 * 3));
+var currentHour = moscowNow.getHours();
+var todayPad = function(num) { return (num < 10 ? '0' : '') + num; };
+var todayStr = moscowNow.getFullYear() + '-' + todayPad(moscowNow.getMonth() + 1) + '-' + todayPad(moscowNow.getDate());
+AVAILABLE_HOURS.forEach(function(hour) {
+var fullDateTimeCheck = dateStr + " " + hour;
+var currentStartHour = parseInt(hour.split(':'));
+var prevHourStr = dateStr + " " + todayPad(currentStartHour - 1) + ":00";
+var isBusy = busySlots.includes(fullDateTimeCheck) || busySlots.includes(prevHourStr);
+if (dateStr === todayStr && currentStartHour <= currentHour) {
+return;
+}
+var btn = document.createElement('button');
+btn.classList.add('time-btn');
+btn.innerText = hour;
+if (isBusy) btn.disabled = true;
+btn.onclick = function() {
+document.querySelectorAll('.time-btn').forEach(function(b) { b.classList.remove('active'); });
+btn.classList.add('active');
+bookSelectedSlot(fullDateTimeCheck);
+};
+slotsGrid.appendChild(btn);
+});
+window.scrollTo(0, document.body.scrollHeight);
+}
+function bookSelectedSlot(dateTimeStr) {
+calendarBlock.style.display = "none";
+typingIndicator.style.display = "block";
+window.scrollTo(0, document.body.scrollHeight);
+var urlParams = "&action=bookSlot" +
+"&type=" + encodeURIComponent(serviceType) +
+"&fullName=" + encodeURIComponent(clientName) +
+"&userName=" + encodeURIComponent(userName) +
+"&dateTime=" + encodeURIComponent(dateTimeStr) +
+"&title=" + encodeURIComponent(serviceType + ": " + clientName) +
+"&niche=" + encodeURIComponent(clientNiche) +
+"&pain=" + encodeURIComponent(clientPain) +
+"&clientChatId=" + encodeURIComponent(clientChatId);
+fetch(SCRIPT_URL + urlParams, { method: "GET" })
+.then(function() {
+typingIndicator.style.display = "none";
+var currentHour = new Date().getHours();
+var finalMsg = "🔥 Потрясающе, " + clientName + "! Ваша запись успешно подтверждена!
 
-    function loadCalendarData() {
-        typingIndicator.style.display = "block";
-        fetch(SCRIPT_URL + "?action=getBusySlots")
-        .then(function(res) { return res.json(); })
-        .then(function(data) { busySlots = data; renderCalendar(); })
-        .catch(function(err) { console.error(err); busySlots = []; renderCalendar(); });
-    }
+" +
+"📅 Дата и время: " + dateTimeStr + " (МСК)
+" +
+"🎯 Формат: " + serviceType + "
 
-    function renderCalendar() {
-        typingIndicator.style.display = "none";
-        appendMessage("🤖 Спасибо за ответы! Слот-система Яндекса синхронизирована. Выберите удобный день и время для встречи:", "bot");
-        calendarBlock.style.display = "flex";
-        daysRow.innerHTML = "";
-        for (var i = 0; i < 3; i++) {
-            var d = new Date();
-            d.setDate(d.getDate() + i);
-            var pad = function(num) { return (num < 10 ? '0' : '') + num; };
-            var dateStr = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-            var options = { weekday: 'short', month: 'short', day: 'numeric' };
-            var label = d.toLocaleDateString('ru-RU', options);
-            var btn = document.createElement('button');
-            btn.classList.add('day-btn');
-            if (i === 0) { btn.classList.add('active'); selectedDateStr = dateStr; }
-            btn.innerText = label;
-            (function(currentDateStr) {
-                btn.onclick = function() {
-                    document.querySelectorAll('.day-btn').forEach(function(b) { b.classList.remove('active'); });
-                    btn.classList.add('active');
-                    selectedDateStr = currentDateStr;
-                    renderHours(currentDateStr);
-                };
-            })(dateStr);
-            daysRow.appendChild(btn);
-        }
-        renderHours(selectedDateStr);
-    }
-
-    function renderHours(dateStr) {
-        slotsGrid.innerHTML = "";
-        var now = new Date();
-        var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-        var moscowNow = new Date(utc + (3600000 * 3));
-        var currentHour = moscowNow.getHours();
-        var todayPad = function(num) { return (num < 10 ? '0' : '') + num; };
-        var todayStr = moscowNow.getFullYear() + '-' + todayPad(moscowNow.getMonth() + 1) + '-' + todayPad(moscowNow.getDate());
-        AVAILABLE_HOURS.forEach(function(hour) {
-            var fullDateTimeCheck = dateStr + " " + hour;
-            var currentStartHour = parseInt(hour.split(':')[0]);
-            var prevHourStr = dateStr + " " + todayPad(currentStartHour - 1) + ":00";
-            var isBusy = busySlots.includes(fullDateTimeCheck) || busySlots.includes(prevHourStr);
-            if (dateStr === todayStr && currentStartHour <= currentHour) {
-                return;
-            }
-            var btn = document.createElement('button');
-            btn.classList.add('time-btn');
-            btn.innerText = hour;
-            if (isBusy) btn.disabled = true;
-            btn.onclick = function() {
-                document.querySelectorAll('.time-btn').forEach(function(b) { b.classList.remove('active'); });
-                btn.classList.add('active');
-                bookSelectedSlot(fullDateTimeCheck);
-            };
-            slotsGrid.appendChild(btn);
-        });
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-    function bookSelectedSlot(dateTimeStr) {
-        calendarBlock.style.display = "none";
-        typingIndicator.style.display = "block";
-        window.scrollTo(0, document.body.scrollHeight);
-        var urlParams = "?action=bookSlot" +
-            "&type=" + encodeURIComponent(serviceType) +
-            "&fullName=" + encodeURIComponent(clientName) +
-            "&userName=" + encodeURIComponent(userName) +
-            "&dateTime=" + encodeURIComponent(dateTimeStr) +
-            "&title=" + encodeURIComponent(serviceType + ": " + clientName) +
-            "&niche=" + encodeURIComponent(clientNiche) +
-            "&pain=" + encodeURIComponent(clientPain) +
-            "&clientChatId=" + encodeURIComponent(clientChatId);
-        fetch(SCRIPT_URL + urlParams, { method: "GET" })
-        .then(function() {
-            typingIndicator.style.display = "none";
-            var currentHour = new Date().getHours();
-            var finalMsg = "🔥 Потрясающе, " + clientName + "! Ваша запись успешно подтверждена!<br><br>" +
-                "📅 Дата и время: " + dateTimeStr + " (МСК)<br>" +
-                "🎯 Формат: " + serviceType + "<br><br>" +
-                "Лина уже отправила вам чек-лист подтверждения в чат бота. Окно закроется автоматически...";
-            appendMessage(finalMsg, "bot");
-            setTimeout(function() { if (typeof tg !== 'undefined' && tg) tg.close(); }, 3500);
-        })
-        .catch(function(err) {
-            typingIndicator.style.display = "none";
-            appendMessage("❌ Ошибка связи с календарем. Кристина свяжется с вами вручную!", "bot");
-            console.error(err);
-        });
-    }
-
-    function appendMessage(text, sender) {
-        var msgDiv = document.createElement('div');
-        msgDiv.classList.add('message', sender);
-        msgDiv.innerHTML = text;
-        chatContainer.appendChild(msgDiv);
-        window.scrollTo(0, document.body.scrollHeight);
-    }
+" +
+"Лина уже отправила вам чек-лист подтверждения в чат бота. Окно закроется автоматически...";
+appendMessage(finalMsg, "bot");
+setTimeout(function() { if (tg) tg.close(); }, 3500);
+})
+.catch(function(err) {
+typingIndicator.style.display = "none";
+appendMessage("❌ Ошибка связи с календарем. Кристина свяжется с вами вручную!", "bot");
+console.error(err);
+});
+}
+function appendMessage(text, sender) {
+var msgDiv = document.createElement('div');
+msgDiv.classList.add('message', sender);
+msgDiv.innerHTML = text;
+chatContainer.appendChild(msgDiv);
+window.scrollTo(0, document.body.scrollHeight);
+}
 </script>
 </body>
 </html>
