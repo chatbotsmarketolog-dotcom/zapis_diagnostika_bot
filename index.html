@@ -317,8 +317,8 @@
         } catch (e) {}
     }
 
-    // ВАША РЕАЛЬНАЯ ССЫЛКА НА GOOGLE SCRIPT
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx4WtUvnOjqxoJ0wBqG5oLfxhNUUfk1uGxM92UhZMv8fVHHNk5pg-yUpLctuFWJqZpz/exec";
+    // ВАША НОВАЯ РЕАЛЬНАЯ ССЫЛКА НА GOOGLE SCRIPT
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf8PlU8jLEZfqwaG5E5YVumjYfneMejnuto1MSEhXDYwfeQjWR2h20JvZX_053pDGV/exec";
     
     const chatContainer = document.getElementById('chat');
     const actionBlock = document.getElementById('actionBlock');
@@ -482,7 +482,7 @@
         window.scrollTo(0, document.body.scrollHeight);
     }
 
-    // ФИНАЛЬНАЯ ЗАПИСЬ
+    // ФИНАЛЬНАЯ ЗАПИСЬ (С УМНОЙ ПРОВЕРКОЙ ДЕНЬ/НОЧЬ ПО МСК)
     function bookSelectedSlot(dateTimeStr) {
         calendarBlock.style.display = "none";
         typingIndicator.style.display = "block";
@@ -514,11 +514,21 @@
         }).then(() => {
             typingIndicator.style.display = "none";
             
-            const finalMsg = `🔥 <b>Потрясающе! Ваша запись успешно подтверждена!</b><br><br>` +
-                             `📅 <b>Дата:</b> ${dateTimeStr.split(' ')[0]}<br>` +
-                             `⏰ <b>Время:</b> ${dateTimeStr.split(' ')[1]} (МСК)<br>` +
-                             `🎯 <b>Формат:</b> ${serviceType}<br><br>` +
-                             `Данные внесены в расписание. Кристина свяжется с вами в личных сообщениях в течение 2-3 часов для подтверждения созвона. Пожалуйста, держите уведомления включенными!`;
+            // ОПРЕДЕЛЕНИЕ ДНЯ ИЛИ НОЧИ (по МСК, UTC+3)
+            const now = new Date();
+            const moscowHour = (now.getUTCHours() + 3) % 24;
+            const isNight = moscowHour >= 22 || moscowHour < 8;
+
+            let finalMsg = `🔥 <b>Потрясающе! Ваша запись успешно подтверждена!</b><br><br>` +
+                           `📅 <b>Дата:</b> ${dateTimeStr.split(' ')[0]}<br>` +
+                           `⏰ <b>Время:</b> ${dateTimeStr.split(' ')[1]} (МСК)<br>` +
+                           `🎯 <b>Формат:</b> ${serviceType}<br><br>`;
+                           
+            if (isNight) {
+                finalMsg += `🌙 Поскольку сейчас глубокая ночь, Кристина детально изучит вашу анкету и лично напишет вам в ЛС утром в первую очередь для отправки ссылки на Zoom. Хорошего отдыха!`;
+            } else {
+                finalMsg += `⚡ Данные внесены в расписание. Кристина свяжется с вами в личных сообщениях в течение 2-3 часов для подтверждения созвона. Пожалуйста, держите уведомления включенными!`;
+            }
                              
             appendMessage(finalMsg, "bot");
             
