@@ -2,10 +2,9 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Кристина.AI | Автоматизация</title>
-    <!-- Официальный скрипт Telegram Web Apps -->
-    <script src="https://telegram.org"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --bg-color: #0d0e12;
@@ -17,7 +16,6 @@
             --bot-bubble: rgba(255, 255, 255, 0.07);
             --user-bubble: linear-gradient(135deg, #007aff, #0056b3);
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
@@ -26,131 +24,47 @@
             padding: 16px;
             display: flex;
             flex-direction: column;
-            min-height: 92vh;
+            min-height: 100vh;
             justify-content: space-between;
             overflow-x: hidden;
         }
-
-        .header {
-            text-align: center;
-            padding: 10px 0 20px 0;
-        }
-
+        .header { text-align: center; padding: 10px 0 20px 0; }
         .header h1 {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 0 0 4px 0;
-            letter-spacing: -0.5px;
+            font-size: 22px; font-weight: 700; margin: 0 0 4px 0; letter-spacing: -0.5px;
             background: linear-gradient(135deg, #fff 0%, #8e929b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        .header p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin: 0;
-        }
-
-        .chat-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            flex-grow: 1;
-            margin-bottom: 20px;
-        }
-
+        .header p { font-size: 13px; color: var(--text-muted); margin: 0; }
+        .chat-container { width: 100%; display: flex; flex-direction: column; gap: 16px; flex-grow: 1; margin-bottom: 20px; }
         .message {
-            padding: 14px 18px;
-            border-radius: 20px;
-            max-width: 85%;
-            line-height: 1.45;
-            font-size: 15px;
-            animation: fadeIn 0.4s ease forwards;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--border-color);
+            padding: 14px 18px; border-radius: 20px; max-width: 85%; line-height: 1.45; font-size: 15px;
+            animation: fadeIn 0.4s ease forwards; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); border: 1px solid var(--border-color);
         }
-
-        .bot {
-            background: var(--bot-bubble);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-
-        .user {
-            background: var(--user-bubble);
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            border: none;
-        }
-
-        /* Анимация печати */
+        .bot { background: var(--bot-bubble); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .user { background: var(--user-bubble); align-self: flex-end; border-bottom-right-radius: 4px; border: none; }
         .typing-indicator {
-            display: none;
-            align-self: flex-start;
-            background: var(--bot-bubble);
-            padding: 12px 20px;
-            border-radius: 20px;
-            border-bottom-left-radius: 4px;
-            border: 1px solid var(--border-color);
-            margin-top: 5px;
+            display: none; align-self: flex-start; background: var(--bot-bubble); padding: 12px 20px;
+            border-radius: 20px; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); margin-top: 5px;
         }
-
         .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            float: left;
-            margin: 0 2px;
-            background-color: var(--text-muted);
-            border-radius: 50%;
-            opacity: 0.4;
-            animation: bounce 1.3s infinite ease-in-out;
+            height: 8px; width: 8px; float: left; margin: 0 2px; background-color: var(--text-muted);
+            border-radius: 50%; opacity: 0.4; animation: bounce 1.3s infinite ease-in-out;
         }
-
         .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-        /* Футер с кнопкой */
-        .footer-action {
-            width: 100%;
-            padding-bottom: 10px;
-        }
-
+        .footer-action { width: 100%; padding-bottom: 20px; }
         .btn {
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            padding: 16px;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s ease;
+            background: #ffffff; color: #000000; border: none; padding: 16px; border-radius: 14px;
+            font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s ease;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
-
-        .btn:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     </style>
 </head>
 <body>
-
-<!-- Невидимый тег-активатор для железного удержания вебхука -->
-<img src="https://telegram.org" style="display:none; width:1px; height:1px;">
 
 <div class="header">
     <h1>КРИСТИНА.AI</h1>
@@ -158,13 +72,11 @@
 </div>
 
 <div class="chat-container" id="chat">
-    <!-- Первое сообщение -->
     <div class="message bot">
         🤖 Рада видеть вас! Я интеллектуальный ассистент Кристины.<br><br>Помогаю экспертам выстроить надежные автоворонки, которые заменяют рутину и освобождают до 12 часов в неделю.<br><br>Чтобы записаться на аудит вашей системы продаж, нажмите кнопку ниже.
     </div>
 </div>
 
-<!-- Индикатор набора текста -->
 <div class="typing-indicator" id="typing">
     <span></span><span></span><span></span>
 </div>
@@ -174,6 +86,9 @@
 </div>
 
 <script>
+    // Ссылка на ваш развернутый Google Apps Script
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWLgfmCJM8h-PAykUlKWxUTpAN-PiFuB8FXn6vrVOnIYLcKyvCHJwcq3ji34Ac8OrD/exec";
+
     let tg = window.Telegram?.WebApp;
     
     if (tg) {
@@ -191,13 +106,8 @@
                     actionBtnStyle.style.color = '#ffffff';
                 }
             }
-        } catch (e) {
-            console.log("Ошибка ТГ стилей:", e);
-        }
+        } catch (e) { console.log("Ошибка ТГ стилей:", e); }
     }
-
-    const BOT_TOKEN = "8977099298:AAGsDid9z1xZ1BJMmP9SW5E4EdPklV2Tq5Y";
-    const ADMIN_ID = "6300678737";
 
     const chatContainer = document.getElementById('chat');
     const actionBtn = document.getElementById('actionBtn');
@@ -214,24 +124,51 @@
 
     function startDiagnostics() {
         appendMessage("Записаться на диагностику", "user");
-        if (actionBtn) actionBtn.style.display = "none";
+        if (actionBtn) {
+            actionBtn.disabled = true;
+            actionBtn.innerText = "Обработка...";
+        }
 
         if (typingIndicator) typingIndicator.style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
 
-        setTimeout(() => {
+        // Отправляем данные в Google Script
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                fullName: fullName,
+                userName: userName
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
             if (typingIndicator) typingIndicator.style.display = "none";
             
-            // ТЕКСТ ПОЛНОСТЬЮ ИСПРАВЛЕН НА РУССКИЙ ЯЗЫК
-            appendMessage(
-                "🔥 <b>Отличный выбор! Ваша заявка успешно принята.</b><br><br>" +
-                "Я уже передал данные Кристине. Она свяжется с вами в личных сообщениях. Если вы оставили заявку днем, ответ придет в течение 2-3 часов. Если сейчас глубокая ночь — Кристина напишет вам утром в первую очередь.<br><br>" +
-                "👉 <b>Что сделать сейчас:</b> закройте это мини-приложение (крестик в правом верхнем углу) и напишите в открывшийся чат бота вашу нишу бизнеса. Так Кристина сможет подготовиться к разбору вашего проекта заранее!", 
-                "bot"
-            );
-            
-            sendNotificationToAdmin();
-        }, 1800);
+            if (data.status === "success") {
+                appendMessage(
+                    "🔥 <b>Отличный выбор! Ваша заявка успешно принята.</b><br><br>" +
+                    "Я уже передала данные Кристине. Она свяжется с вами в личных сообщениях. Если вы оставили заявку днем, ответ придет в течение 2-3 часов. Если сейчас глубокая ночь — Кристина напишет вам утром в первую очередь.<br><br>" +
+                    "👉 <b>Что сделать сейчас:</b> закройте это мини-приложение (крестик в правом верхнем углу) и напишите в открывшийся чат бота вашу нишу бизнеса. Так Кристина сможет подготовиться к разбору вашего проекта заранее!", 
+                    "bot"
+                );
+                if (tg) setTimeout(() => tg.close(), 4000);
+            } else {
+                appendMessage("❌ Произошла ошибка при отправке заявки. Пожалуйста, попробуйте еще раз или напишите Кристине напрямую.", "bot");
+                if (actionBtn) {
+                    actionBtn.disabled = false;
+                    actionBtn.innerText = "Записаться на диагностику";
+                }
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            if (typingIndicator) typingIndicator.style.display = "none";
+            appendMessage("❌ Ошибка соединения. Проверьте интернет и попробуйте снова.", "bot");
+            if (actionBtn) {
+                actionBtn.disabled = false;
+                actionBtn.innerText = "Записаться на диагностику";
+            }
+        });
     }
 
     function appendMessage(text, sender) {
@@ -240,25 +177,6 @@
         msgDiv.innerHTML = text;
         if (chatContainer) chatContainer.appendChild(msgDiv);
         window.scrollTo(0, document.body.scrollHeight);
-    }
-
-    function sendNotificationToAdmin() {
-        const textToAdmin = `🚀 **Новая заявка на ДИАГНОСТИКУ из Web App!**\n\n` +
-                            `👤 Клиент: ${fullName}\n` +
-                            `🆔 Юзернейм: ${userName}\n` +
-                            `🎯 Статус: Ожидает разбора`;
-
-        const url = `https://telegram.org{BOT_TOKEN}/sendMessage`;
-        
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: ADMIN_ID,
-                text: textToAdmin,
-                parse_mode: "Markdown"
-            })
-        }).catch(err => console.error(err));
     }
 </script>
 </body>
