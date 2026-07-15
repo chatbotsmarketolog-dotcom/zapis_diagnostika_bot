@@ -142,6 +142,7 @@
 </div>
 
 <div class="footer-action">
+    <!-- Исправлено: теперь onclick вызывает правильную функцию sendServiceToBot -->
     <button class="btn" onclick="sendServiceToBot('ДИАГНОСТИКА (3 000 ₽)')">
         <b>ДИАГНОСТИКА (3 000 ₽)</b>
         <span>Узнать, где моя текущая воронка тайно сливает клиентов.</span>
@@ -160,7 +161,7 @@
     var tg = window.Telegram?.WebApp;
     if (tg) { try { tg.expand(); } catch (e) {} }
 
-    // Адрес твоего бэкенда Google Script
+    // Адрес бэкенда Google Script
     var SCRIPT_URL = "https://google.com";
 
     var userName = "из_ВК_или_поиска";
@@ -174,11 +175,12 @@
         clientChatId = String(u.id); 
     }
 
+    // Правильная, рабочая функция для закрытия и фоновой отправки
     function sendServiceToBot(serviceName) {
-        // Мгновенно закрываем Web App для бесшовного перехода пользователя в чат
-        if (tg) tg.close();
+        if (tg) {
+            try { tg.close(); } catch(e) {}
+        }
 
-        // Отправляем сигнал в Google Script в фоновом режиме через GET-запрос (без блокировок CORS)
         var urlParams = "?action=selectService" +
                         "&type=" + encodeURIComponent(serviceName) +
                         "&fullName=" + encodeURIComponent(telegramFullName) +
