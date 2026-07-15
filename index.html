@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кристина.AI | Автоматизация</title>
-    <!-- Официальный скрипт Telegram Web Apps -->
-    <script src="https://telegram.org"></script>
+    <title>Кристина.AI | Автоворонки для инфобизнеса и чат-боты под ключ</title>
     <style>
         :root {
             --bg-color: #0d0e12;
@@ -85,7 +83,76 @@
             border: none;
         }
 
-        /* Анимация печати */
+        /* Монолитный календарный блок */
+        .calendar-section {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            animation: fadeIn 0.4s ease forwards;
+            box-sizing: border-box;
+        }
+
+        .calendar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .days-row {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .day-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .day-btn.active, .time-btn.active {
+            background: var(--accent-glow);
+            border-color: var(--accent-glow);
+        }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .time-btn {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px 6px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .time-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.02);
+            border-color: transparent;
+            text-decoration: line-through;
+        }
+
         .typing-indicator {
             display: none;
             align-self: flex-start;
@@ -111,10 +178,12 @@
         .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
-        /* Футер с кнопкой */
         .footer-action {
             width: 100%;
             padding-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .btn {
@@ -123,12 +192,18 @@
             border: none;
             padding: 16px;
             border-radius: 14px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
             transition: all 0.2s ease;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-accent {
+            background: var(--accent-glow);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(0, 122, 255, 0.2);
         }
 
         .btn:active {
@@ -149,62 +224,50 @@
 </head>
 <body>
 
-<!-- Невидимый тег-активатор для железного удержания вебхука -->
-<img src="https://telegram.org" style="display:none; width:1px; height:1px;">
-
 <div class="header">
     <h1>КРИСТИНА.AI</h1>
     <p>Архитектура автоматизации инфобизнеса</p>
 </div>
 
 <div class="chat-container" id="chat">
-    <!-- Первое сообщение -->
     <div class="message bot">
-        🤖 Рада видеть вас! Я интеллектуальный ассистент Кристины.<br><br>Помогаю экспертам выстроить надежные автоворонки, которые заменяют рутину и освобождают до 12 часов в неделю.<br><br>Чтобы записаться на аудит вашей системы продаж, нажмите кнопку ниже.
+        🤖 Рада видеть вас в <b>КРИСТИНА.AI</b>! Я интеллектуальная система автоматизации маркетинга.<br><br>Помогаю крупным экспертам, коучам и помогающим практикам полностью убрать рутину из ЛС, защитить продажи от блокировок в РФ и освободить до 12 часов в неделю за счет внедрения независимых автоворонок и умных AI-агентов.<br><br>👉 <i>Если вы хотите сначала изучить мои твердые кейсы и схемы, переходите в мой Telegram-канал:</i> t.me/fullstack_razrabotka<br><br>Выберите необходимую услугу ниже, чтобы моментально рассчитать смету и забронировать свободное окно в общем календаре.
     </div>
 </div>
 
-<!-- Индикатор набора текста -->
 <div class="typing-indicator" id="typing">
     <span></span><span></span><span></span>
 </div>
 
-<div class="footer-action">
-    <button class="btn" id="actionBtn" onclick="startDiagnostics()">Записаться на диагностику</button>
+<!-- Монолитный блок интерактивного календаря -->
+<div class="calendar-section" id="calendarBlock">
+    <div class="calendar-title">📅 Выберите дату встречи:</div>
+    <div class="days-row" id="daysRow"></div>
+    <div class="calendar-title" style="margin-top:8px;">⏰ Выберите свободное время (МСК):</div>
+    <div class="slots-grid" id="slotsGrid"></div>
+</div>
+
+<div class="footer-action" id="actionBlock">
+    <button class="btn btn-accent" id="diagBtn" onclick="selectService('Запись на диагностику')">Записаться на диагностику (0 ₽)</button>
+    <button class="btn" id="razborBtn" onclick="selectService('Персональный разбор воронки')">Персональный разбор (2 500 ₽)</button>
 </div>
 
 <script>
     let tg = window.Telegram?.WebApp;
-    
-    if (tg) {
-        try {
-            tg.expand();
-            if (tg.colorScheme === 'light') {
-                document.documentElement.style.setProperty('--bg-color', '#f5f5f7');
-                document.documentElement.style.setProperty('--text-main', '#000000');
-                document.documentElement.style.setProperty('--text-muted', '#6e6e73');
-                document.documentElement.style.setProperty('--bot-bubble', '#ffffff');
-                document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.05)');
-                const actionBtnStyle = document.getElementById('actionBtn');
-                if (actionBtnStyle) {
-                    actionBtnStyle.style.background = '#007aff';
-                    actionBtnStyle.style.color = '#ffffff';
-                }
-            }
-        } catch (e) {
-            console.log("Ошибка ТГ стилей:", e);
-        }
-    }
+    if (tg) { try { tg.expand(); } catch (e) {} }
 
-    const BOT_TOKEN = "8977099298:AAGsDid9z1xZ1BJMmP9SW5E4EdPklV2Tq5Y";
-    const ADMIN_ID = "6300678737";
+    // НОВАЯ ССЫЛКА НА ВАШ БЭКЕНД GOOGLE SCRIPT
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzVmdXCHh0AVVpTtRJNRNHnRLOUThzBYE4nPF9NbPkNuVD1gl5wtxr0ahY4qBoOEhc3/exec";
 
     const chatContainer = document.getElementById('chat');
-    const actionBtn = document.getElementById('actionBtn');
     const typingIndicator = document.getElementById('typing');
+    const calendarBlock = document.getElementById('calendarBlock');
+    const actionBlock = document.getElementById('actionBlock');
+    const daysRow = document.getElementById('daysRow');
+    const slotsGrid = document.getElementById('slotsGrid');
 
-    let userName = "нет_ника";
-    let fullName = "Пользователь из поиска";
+    let userName = "из_ВК_или_поиска";
+    let fullName = "Пользователь";
 
     if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const u = tg.initDataUnsafe.user;
@@ -212,54 +275,139 @@
         fullName = `${u.first_name || ''} ${u.last_name || ''}`.trim() || "Пользователь";
     }
 
-    function startDiagnostics() {
-        appendMessage("Записаться на диагностику", "user");
-        if (actionBtn) actionBtn.style.display = "none";
+    let selectedServiceType = "";
+    let selectedDateStr = "";
+    let busySlots = [];
 
-        if (typingIndicator) typingIndicator.style.display = "block";
+    // Шаблонные часы для созвонов на каждый день
+    const AVAILABLE_HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+
+    // ШАГ 1: Клик по одной из двух кнопок услуг
+    function selectService(serviceName) {
+        selectedServiceType = serviceName;
+        appendMessage(serviceName, "user");
+        actionBlock.style.display = "none";
+        typingIndicator.style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
 
-        setTimeout(() => {
-            if (typingIndicator) typingIndicator.style.display = "none";
+        // Тянем список занятых слотов из Яндекса через Google
+        fetch(`${SCRIPT_URL}?action=getBusySlots`)
+            .then(res => res.json())
+            .then(data => {
+                busySlots = data;
+                renderCalendar();
+            })
+            .catch(err => {
+                console.error("Ошибка загрузки календаря:", err);
+                busySlots = [];
+                renderCalendar();
+            });
+    }
+
+    // ШАГ 2: Генерация сетки дней и слотов
+    function renderCalendar() {        
+        typingIndicator.style.display = "none";
+        appendMessage("🤖 Общий календарь Кристины синхронизирован. Выберите удобный день и время созвона:", "bot");
+        
+        calendarBlock.style.display = "flex";
+        daysRow.innerHTML = "";
+
+        // Генерируем 3 ближайших дня (сегодня, завтра, послезавтра)
+        for (let i = 0; i < 3; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() + i);
+            const dateStr = d.toISOString().split('T')[0];
+            const options = { weekday: 'short', month: 'short', day: 'numeric' };
+            const label = d.toLocaleDateString('ru-RU', options);
+
+            const btn = document.createElement('button');
+            btn.classList.add('day-btn');
+            if (i === 0) { btn.classList.add('active'); selectedDateStr = dateStr; }
+            btn.innerText = label;
+            btn.onclick = () => {
+                document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedDateStr = dateStr;
+                renderHours(dateStr);
+            };
+            daysRow.appendChild(btn);
+        }
+        renderHours(selectedDateStr);
+    }
+
+    function renderHours(dateStr) {
+        slotsGrid.innerHTML = "";
+        AVAILABLE_HOURS.forEach(hour => {
+            const fullDateTimeCheck = `${dateStr} ${hour}`;
+            const isBusy = busySlots.includes(fullDateTimeCheck);
+
+            const btn = document.createElement('button');
+            btn.classList.add('time-btn');
+            btn.innerText = hour;
+            if (isBusy) btn.disabled = true;
+
+            btn.onclick = () => {
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                bookSelectedSlot(fullDateTimeCheck);
+            };
+            slotsGrid.appendChild(btn);
+        });
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    // ШАГ 3: Финальное бронирование и отправка
+    function bookSelectedSlot(dateTimeStr) {
+        calendarBlock.style.display = "none";
+        typingIndicator.style.display = "block";
+        window.scrollTo(0, document.body.scrollHeight);
+
+        const payload = {
+            action: "bookSlot",
+            type: selectedServiceType,
+            fullName: fullName,
+            userName: userName,
+            dateTime: dateTimeStr,
+            title: `${selectedServiceType}: ${fullName}`
+        };
+
+        fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors", // Позволяет отправлять запросы без CORS-ошибок браузера
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            typingIndicator.style.display = "none";
             
-            // ТЕКСТ ПОЛНОСТЬЮ ИСПРАВЛЕН НА РУССКИЙ ЯЗЫК
-            appendMessage(
-                "🔥 <b>Отличный выбор! Ваша заявка успешно принята.</b><br><br>" +
-                "Я уже передал данные Кристине. Она свяжется с вами в личных сообщениях. Если вы оставили заявку днем, ответ придет в течение 2-3 часов. Если сейчас глубокая ночь — Кристина напишет вам утром в первую очередь.<br><br>" +
-                "👉 <b>Что сделать сейчас:</b> закройте это мини-приложение (крестик в правом верхнем углу) и напишите в открывшийся чат бота вашу нишу бизнеса. Так Кристина сможет подготовиться к разбору вашего проекта заранее!", 
-                "bot"
-            );
+            // Расчет текста на основе времени суток МСК
+            const currentHour = new Date().getHours();
+            let finalMsg = `🔥 <b>Потрясающе! Ваше время ${dateTimeStr.split(' ')[1]} на дату ${dateTimeStr.split(' ')[0]} успешно забронировано!</b><br><br>`;
             
-            sendNotificationToAdmin();
-        }, 1800);
+            if (selectedServiceType.includes("диагностику")) {
+                finalMsg += `Архитектура воронки под ваш проект уже в процессе подготовки. `;
+            } else {
+                finalMsg += `Смета и оцифровка вашего разбора за 2 500 ₽ зафиксированы. `;
+            }
+
+            if (currentHour >= 22 || currentHour < 8) {
+                finalMsg += `Поскольку сейчас глубокая ночь, Кристина лично напишет вам в ЛС утром в первую очередь для подтверждения созвона. Хорошего отдыха!`;
+            } else {
+                finalMsg += `Кристина свяжется с вами в личных сообщениях в течение 2-3 часов для отправки ссылки на Zoom. Пожалуйста, держите уведомления включенными!`;
+            }
+
+            appendMessage(finalMsg, "bot");
+        }).catch(err => {
+            typingIndicator.style.display = "none";
+            appendMessage("❌ Произошла ошибка связи с календарем. Кристина уже уведомлена, она свяжется с вами вручную!", "bot");
+            console.error(err);
+        });
     }
 
     function appendMessage(text, sender) {
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message', sender);
         msgDiv.innerHTML = text;
-        if (chatContainer) chatContainer.appendChild(msgDiv);
+        chatContainer.appendChild(msgDiv);
         window.scrollTo(0, document.body.scrollHeight);
     }
 
-    function sendNotificationToAdmin() {
-        const textToAdmin = `🚀 **Новая заявка на ДИАГНОСТИКУ из Web App!**\n\n` +
-                            `👤 Клиент: ${fullName}\n` +
-                            `🆔 Юзернейм: ${userName}\n` +
-                            `🎯 Статус: Ожидает разбора`;
-
-        const url = `https://telegram.org{BOT_TOKEN}/sendMessage`;
-        
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: ADMIN_ID,
-                text: textToAdmin,
-                parse_mode: "Markdown"
-            })
-        }).catch(err => console.error(err));
-    }
-</script>
-</body>
-</html>
