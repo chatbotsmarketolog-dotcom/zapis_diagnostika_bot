@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кристина.AI | Автоворонки и автоматизация</title>
-    <!-- Официальный скрипт Telegram Web Apps -->
+    <title>Кристина.AI | Выбор услуги</title>
     <script src="https://telegram.org"></script>
     <style>
         :root {
@@ -12,11 +11,7 @@
             --border-color: rgba(255, 255, 255, 0.1);
             --text-main: #ffffff;
             --text-muted: #8e929b;
-            --accent-glow: #007aff;
-            --bot-bubble: rgba(255, 255, 255, 0.07);
-            --user-bubble: linear-gradient(135deg, #007aff, #0056b3);
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
@@ -27,71 +22,29 @@
             flex-direction: column;
             min-height: 92vh;
             justify-content: space-between;
-            overflow-x: hidden;
         }
-
-        .header {
-            text-align: center;
-            padding: 10px 0 20px 0;
-        }
-
+        .header { text-align: center; padding: 10px 0 20px 0; }
         .header h1 {
             font-size: 22px;
             font-weight: 700;
-            margin: 0 0 4px 0;
-            letter-spacing: -0.5px;
+            margin: 0;
             background: linear-gradient(135deg, #fff 0%, #8e929b 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .header p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin: 0;
-        }
-
-        .chat-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            flex-grow: 1;
-            margin-bottom: 20px;
-        }
-
+        .header p { font-size: 13px; color: var(--text-muted); margin: 4px 0 0 0; }
+        .chat-container { width: 100%; display: flex; flex-direction: column; flex-grow: 1; margin-bottom: 20px; }
         .message {
             padding: 14px 18px;
             border-radius: 20px;
             max-width: 85%;
             line-height: 1.45;
             font-size: 15px;
-            animation: fadeIn 0.4s ease forwards;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.07);
             border: 1px solid var(--border-color);
-        }
-
-        .bot {
-            background: var(--bot-bubble);
-            align-self: flex-start;
             border-bottom-left-radius: 4px;
         }
-
-        .user {
-            background: var(--user-bubble);
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            border: none;
-        }
-
-        .footer-action {
-            width: 100%;
-            padding-bottom: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
+        .footer-action { width: 100%; padding-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
         .btn {
             background: #ffffff;
             color: #000000;
@@ -104,26 +57,10 @@
             width: 100%;
             text-align: left;
             line-height: 1.3;
-            transition: all 0.2s ease;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
-
-        .btn span {
-            display: block;
-            font-size: 11px;
-            font-weight: 400;
-            color: #666;
-            margin-top: 4px;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .btn span { display: block; font-size: 11px; font-weight: 400; color: #666; margin-top: 4px; }
+        .btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
@@ -133,22 +70,22 @@
     <p>Архитектура автоматизации инфобизнеса</p>
 </div>
 
-<div class="chat-container" id="chat">
-    <div class="message bot">
+<div class="chat-container">
+    <div class="message">
         🤖 Рада видеть вас в КРИСТИНА.AI! Я Lina - AI менеджер для записи клиентов к Кристине на консультацию или диагностику.<br><br>Выберите, что вам нужно в данный момент?
     </div>
 </div>
 
-<div class="footer-action" id="actionBlock">
-    <button class="btn" onclick="sendServiceToBot('ДИАГНОСТИКА')">
+<div class="footer-action">
+    <button class="btn" onclick="sendToBot('Запустить сценарий: Диагностика')">
         <b>ДИАГНОСТИКА (3 000 ₽)</b>
         <span>Узнать, где моя текущая воронка тайно сливает клиентов.</span>
     </button>
-    <button class="btn" onclick="sendServiceToBot('ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА')">
+    <button class="btn" onclick="sendToBot('Запустить сценарий: Разбор')">
         <b>ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА (2 500 ₽)</b>
         <span>По косточкам разбираем ваше позиционирование, продукт и психологию вашего клиента.</span>
     </button>
-    <button class="btn" onclick="sendServiceToBot('ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ')">
+    <button class="btn" onclick="sendToBot('Запустить сценарий: Консультация')">
         <b>ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ (500 ₽)</b>
         <span>В течение 20 минут разбираюсь, какая услуга вам может быть полезна именно сейчас.</span>
     </button>
@@ -158,51 +95,17 @@
     var tg = window.Telegram?.WebApp;
     if (tg) { try { tg.expand(); } catch (e) {} }
 
-    // ВШИТ ТВОЙ НОВЫЙ АКТУАЛЬНЫЙ АДРЕС БЭКЕНДА
-    var SCRIPT_URL = "https://google.com";
-
-    var chatContainer = document.getElementById("chat");
-    var actionBlock = document.getElementById("actionBlock");
-
-    var userName = "из_ВК_или_поиска";
-    var telegramFullName = "Пользователь";
-    var clientChatId = ""; 
-
-    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        var u = tg.initDataUnsafe.user;
-        userName = u.username ? "@" + u.username : "скрыт";
-        telegramFullName = (u.first_name || "" + " " + (u.last_name || "")).trim() || "Пользователь";
-        clientChatId = String(u.id); 
-    }
-
-    function sendServiceToBot(serviceName) {
-        // 1. Рисуем ответ пользователя на экране сайта
-        var userMsgDiv = document.createElement("div");
-        userMsgDiv.classList.add("message", "user");
-        userMsgDiv.innerHTML = serviceName;
-        if (chatContainer) chatContainer.appendChild(userMsgDiv);
-
-        // 2. Выводим красивую и понятную инструкцию по ручному закрытию шторки
-        var botReplyDiv = document.createElement("div");
-        botReplyDiv.style.marginTop = "15px";
-        botReplyDiv.classList.add("message");
-        botReplyDiv.innerHTML = "🔥 <b>Отличный выбор! Формат встречи зафиксирован.</b><br><br>👉 Пожалуйста, <b>закройте это окно</b> (нажмите на крестик в правом верхнем углу экрана).<br><br>Я уже отправила первый вопрос в наш чат бота, мы продолжим общение и заполнение анкеты прямо там!";
-        if (chatContainer) chatContainer.appendChild(botReplyDiv);
-
-        // 3. Мягко прячем кнопки услуг
-        if (actionBlock) actionBlock.style.display = "none";
-        window.scrollTo(0, document.body.scrollHeight);
-
-        // 4. Безопасный импульсный запрос через невидимую картинку
-        var imgTrigger = document.createElement("img");
-        imgTrigger.src = SCRIPT_URL + 
-                        "&action=startOpros" +
-                        "&type=" + encodeURIComponent(serviceName) +
-                        "&fullName=" + encodeURIComponent(telegramFullName) +
-                        "&userName=" + encodeURIComponent(userName) +
-                        "&clientChatId=" + encodeURIComponent(clientChatId);
-        imgTrigger.style.display = "none";
-        document.body.appendChild(imgTrigger);
+    function sendToBot(text) {
+        try {
+            if (tg) {
+                // Нативная утренняя фишка отправки текста в чат
+                tg.sendData(text);
+                // Мгновенное авто-закрытие шторки
+                tg.close();
+            }
+        } catch (e) {
+            if (tg) tg.close();
+        }
     }
 </script>
 </body>
