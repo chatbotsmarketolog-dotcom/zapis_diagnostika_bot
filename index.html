@@ -28,10 +28,7 @@
             justify-content: space-between;
             overflow-x: hidden;
         }
-        .header {
-            text-align: center;
-            padding: 10px 0 20px 0;
-        }
+        .header { text-align: center; padding: 10px 0 20px 0; }
         .header h1 {
             font-size: 22px;
             font-weight: 700;
@@ -41,19 +38,8 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .header p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin: 0;
-        }
-        .chat-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            flex-grow: 1;
-            margin-bottom: 20px;
-        }
+        .header p { font-size: 13px; color: var(--text-muted); margin: 0; }
+        .chat-container { width: 100%; display: flex; flex-direction: column; gap: 16px; flex-grow: 1; margin-bottom: 20px; }
         .message {
             padding: 14px 18px;
             border-radius: 20px;
@@ -64,37 +50,11 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border-color);
         }
-        .bot {
-            background: var(--bot-bubble);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-        .user {
-            background: var(--user-bubble);
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            border: none;
-        }
-        .calendar-section {
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            animation: fadeIn 0.4s ease forwards;
-            box-sizing: border-box;
-        }
-        .calendar-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-        .days-row {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
+        .bot { background: var(--bot-bubble); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .user { background: var(--user-bubble); align-self: flex-end; border-bottom-right-radius: 4px; border: none; }
+        .calendar-section { display: none; flex-direction: column; gap: 12px; width: 100%; animation: fadeIn 0.4s ease forwards; box-sizing: border-box; }
+        .calendar-title { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+        .days-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
         .day-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
@@ -107,16 +67,8 @@
             flex-shrink: 0;
             transition: all 0.2s ease;
         }
-        .day-btn.active, .time-btn.active {
-            background: var(--accent-glow);
-            border-color: var(--accent-glow);
-        }
-        .slots-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-top: 8px;
-        }
+        .day-btn.active, .time-btn.active { background: var(--accent-glow); border-color: var(--accent-glow); }
+        .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
         .time-btn {
             background: rgba(255, 255, 255, 0.07);
             border: 1px solid var(--border-color);
@@ -136,13 +88,7 @@
             border-color: transparent;
             text-decoration: line-through;
         }
-        .input-container {
-            display: none;
-            width: 100%;
-            margin-top: 10px;
-            animation: fadeIn 0.4s ease forwards;
-            box-sizing: border-box;
-        }
+        .input-container { display: none; width: 100%; margin-top: 10px; animation: fadeIn 0.4s ease forwards; box-sizing: border-box; }
         .input-field {
             width: 100%;
             background: rgba(255, 255, 255, 0.07);
@@ -154,38 +100,12 @@
             outline: none;
             box-sizing: border-box;
         }
-        .input-field:focus {
-            border-color: var(--accent-glow);
-        }
-        .typing-indicator {
-            display: none;
-            align-self: flex-start;
-            background: var(--bot-bubble);
-            padding: 12px 20px;
-            border-radius: 20px;
-            border-bottom-left-radius: 4px;
-            border: 1px solid var(--border-color);
-            margin-top: 5px;
-        }
-        .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            float: left;
-            margin: 0 2px;
-            background-color: var(--text-muted);
-            border-radius: 50%;
-            opacity: 0.4;
-            animation: bounce 1.3s infinite ease-in-out;
-        }
+        .input-field:focus { border-color: var(--accent-glow); }
+        .typing-indicator { display: none; align-self: flex-start; background: var(--bot-bubble); padding: 12px 20px; border-radius: 20px; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); margin-top: 5px; }
+        .typing-indicator span { height: 8px; width: 8px; float: left; margin: 0 2px; background-color: var(--text-muted); border-radius: 50%; opacity: 0.4; animation: bounce 1.3s infinite ease-in-out; }
         .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        .footer-action {
-            width: 100%;
-            padding-bottom: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .footer-action { width: 100%; padding-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
         .btn {
             background: #ffffff;
             color: #000000;
@@ -201,31 +121,11 @@
             transition: all 0.2s ease;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
-        .btn-accent {
-            background: var(--user-bubble);
-            color: #ffffff;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0, 122, 255, 0.2);
-        }
-        .btn span {
-            display: block;
-            font-size: 11px;
-            font-weight: 400;
-            color: #666;
-            margin-top: 4px;
-        }
-        .btn:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
+        .btn-accent { background: var(--user-bubble); color: #ffffff; text-align: center; box-shadow: 0 0 20px rgba(0, 122, 255, 0.2); }
+        .btn span { display: block; font-size: 11px; font-weight: 400; color: #666; margin-top: 4px; }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     </style>
 </head>
 <body>
@@ -273,6 +173,7 @@
 
 <script>
     var SCRIPT_URL = "https://google.com";
+
     var chatContainer = document.getElementById("chat");
     var actionBlock = document.getElementById("actionBlock");
     var typingIndicator = document.getElementById("typing");
@@ -294,7 +195,7 @@
                 var u = tg.initDataUnsafe.user;
                 userName = u.username ? "@" + u.username : "скрыт";
                 telegramFullName = ((u.first_name || "") + " " + (u.last_name || "")).trim() || "Пользователь";
-                clientChatId = String(u.id);
+                clientChatId = String(u.id); 
             }
         }
     } catch(e) {}
@@ -305,7 +206,8 @@
     var clientPain = "";
     var selectedDateStr = "";
     var busySlots = [];
-    var currentStep = 0;
+    var currentStep = 0; 
+
     var AVAILABLE_HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
 
     function startFlow(name, price) {
@@ -314,6 +216,7 @@
         actionBlock.style.display = "none";
         typingIndicator.style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
+
         setTimeout(function() {
             typingIndicator.style.display = "none";
             var introText = "";
@@ -324,7 +227,7 @@
             } else {
                 introText = "🤖 На экспресс-консультации мы за 20 минут разберем ваш точечный запрос, определим вектор автоматизации и подберем необходимое решение.";
             }
-            appendMessage(introText + "\n\nПеред тем как открыть общий календарь Яндекса, давайте познакомимся. <b>Как я могу к вам обращаться? Напишите ваше имя:</b>", "bot");
+            appendMessage(introText + "<br><br>Перед тем как открыть общий календарь Яндекса, давайте познакомимся. <b>Как я могу к вам обращаться? Напишите ваше имя:</b>", "bot");
             currentStep = 1;
             inputBlock.style.display = "block";
             textInput.placeholder = "Ваше имя...";
@@ -375,7 +278,7 @@
         fetch(SCRIPT_URL + "?action=getBusySlots")
         .then(function(res) { return res.json(); })
         .then(function(data) { busySlots = data; renderCalendar(); })
-        .catch(function(err) { console.error(err); busySlots = []; renderCalendar(); });
+        .catch(function(err) { console.error("Ошибка чтения слотов:", err); busySlots = []; renderCalendar(); });
     }
 
     function renderCalendar() {
@@ -409,9 +312,20 @@
 
     function renderHours(dateStr) {
         slotsGrid.innerHTML = "";
+        var now = new Date();
+        var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        var moscowNow = new Date(utc + (3600000 * 3));
+        var currentHour = moscowNow.getHours();
+        var todayPad = function(num) { return (num < 10 ? '0' : '') + num; };
+        var todayStr = moscowNow.getFullYear() + '-' + todayPad(moscowNow.getMonth() + 1) + '-' + todayPad(moscowNow.getDate());
+        
         AVAILABLE_HOURS.forEach(function(hour) {
             var fullDateTimeCheck = dateStr + " " + hour;
             var isBusy = busySlots.includes(fullDateTimeCheck);
+            var startHour = parseInt(hour.split(':')[0]);
+            if (dateStr === todayStr && startHour <= currentHour) {
+                return;
+            }
             var btn = document.createElement('button');
             btn.classList.add('time-btn');
             btn.innerText = hour;
@@ -430,28 +344,37 @@
         calendarBlock.style.display = "none";
         typingIndicator.style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
-        var payload = {
-            action: "bookSlot",
-            type: serviceType,
-            fullName: clientName,
-            userName: userName,
-            dateTime: dateTimeStr,
-            title: serviceType + ": " + clientName,
-            niche: clientNiche,
-            pain: clientPain,
-            clientChatId: clientChatId
+        
+        var details = {
+            'action': 'bookSlot',
+            'type': serviceType,
+            'fullName': clientName,
+            'userName': userName,
+            'dateTime': dateTimeStr,
+            'title': serviceType + ": " + clientName,
+            'niche': clientNiche,
+            'pain': clientPain,
+            'clientChatId': clientChatId
         };
+        var formBody = [];
+        for (var property in details) {
+            var encodedKey = encodeURIComponent(property);
+            var encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+        
         fetch(SCRIPT_URL, {
             method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            body: formBody
         }).then(function() {
             typingIndicator.style.display = "none";
             var currentHour = new Date().getHours();
             var finalMsg = "🔥 <b>Потрясающе, " + clientName + "! Ваша запись успешно подтверждена!</b><br><br>" +
             "📅 <b>Дата и время:</b> " + dateTimeStr + " (МСК)<br>" +
             "🎯 <b>Формат:</b> " + serviceType + "<br><br>";
+            
             if (currentHour >= 22 || currentHour < 8) {
                 finalMsg += "Поскольку сейчас глубокая ночь, Кристина детально изучит вашу анкету и лично напишет вам в ЛС утром со ссылкой на Zoom. Хорошего отдыха!";
             } else {
