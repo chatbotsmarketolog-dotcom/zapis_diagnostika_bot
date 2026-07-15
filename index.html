@@ -29,36 +29,233 @@
             overflow-x: hidden;
         }
 
-        .header { text-align: center; padding: 10px 0 20px 0; }
-        .header h1 { font-size: 22px; font-weight: 700; margin: 0 0 4px 0; letter-spacing: -0.5px; background: linear-gradient(135deg, #fff 0%, #8e929b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header p { font-size: 13px; color: var(--text-muted); margin: 0; }
-        .chat-container { width: 100%; display: flex; flex-direction: column; gap: 16px; flex-grow: 1; margin-bottom: 20px; }
-        .message { padding: 14px 18px; border-radius: 20px; max-width: 85%; line-height: 1.45; font-size: 15px; animation: fadeIn 0.4s ease forwards; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); border: 1px solid var(--border-color); }
-        .bot { background: var(--bot-bubble); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .user { background: var(--user-bubble); align-self: flex-end; border-bottom-right-radius: 4px; border: none; }
-        .calendar-section { display: none; flex-direction: column; gap: 12px; width: 100%; animation: fadeIn 0.4s ease forwards; box-sizing: border-box; }
-        .calendar-title { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
-        .days-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-        .day-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: #fff; padding: 10px 14px; border-radius: 10px; font-size: 13px; cursor: pointer; text-align: center; flex-shrink: 0; transition: all 0.2s ease; }
-        .day-btn.active, .time-btn.active { background: var(--accent-glow); border-color: var(--accent-glow); }
-        .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
-        .time-btn { background: rgba(255, 255, 255, 0.07); border: 1px solid var(--border-color); color: #fff; padding: 12px 6px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s ease; }
-        .time-btn:disabled { opacity: 0.25; cursor: not-allowed; background: rgba(255, 255, 255, 0.02); border-color: transparent; text-decoration: line-through; }
-        .input-container { display: none; width: 100%; margin-top: 10px; animation: fadeIn 0.4s ease forwards; box-sizing: border-box; }
-        .input-field { width: 100%; background: rgba(255, 255, 255, 0.07); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; color: #fff; font-size: 15px; outline: none; box-sizing: border-box; }
-        .input-field:focus { border-color: var(--accent-glow); }
-        .typing-indicator { display: none; align-self: flex-start; background: var(--bot-bubble); padding: 12px 20px; border-radius: 20px; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); margin-top: 5px; }
-        .typing-indicator span { height: 8px; width: 8px; float: left; margin: 0 2px; background-color: var(--text-muted); border-radius: 50%; opacity: 0.4; animation: bounce 1.3s infinite ease-in-out; }
+        .header {
+            text-align: center;
+            padding: 10px 0 20px 0;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 0%, #8e929b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .chat-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 14px 18px;
+            border-radius: 20px;
+            max-width: 85%;
+            line-height: 1.45;
+            font-size: 15px;
+            animation: fadeIn 0.4s ease forwards;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .bot {
+            background: var(--bot-bubble);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .user {
+            background: var(--user-bubble);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            border: none;
+        }
+
+        /* Блок календаря */
+        .calendar-section {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            animation: fadeIn 0.4s ease forwards;
+            box-sizing: border-box;
+        }
+
+        .calendar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .days-row {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .day-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .day-btn.active, .time-btn.active {
+            background: var(--accent-glow);
+            border-color: var(--accent-glow);
+        }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .time-btn {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px 6px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .time-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.02);
+            border-color: transparent;
+            text-decoration: line-through;
+        }
+
+        /* Инпут */
+        .input-container {
+            display: none;
+            width: 100%;
+            margin-top: 10px;
+            animation: fadeIn 0.4s ease forwards;
+            box-sizing: border-box;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent-glow);
+        }
+
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: var(--bot-bubble);
+            padding: 12px 20px;
+            border-radius: 20px;
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border-color);
+            margin-top: 5px;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            float: left;
+            margin: 0 2px;
+            background-color: var(--text-muted);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: bounce 1.3s infinite ease-in-out;
+        }
+
         .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        .footer-action { width: 100%; padding-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
-        .btn { background: #ffffff; color: #000000; border: none; padding: 16px; border-radius: 14px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; text-align: left; line-height: 1.3; transition: all 0.2s ease; box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); }
-        .btn-accent { background: var(--user-bubble); color: #ffffff; text-align: center; box-shadow: 0 0 20px rgba(0, 122, 255, 0.2); }
-        .btn span { display: block; font-size: 11px; font-weight: 400; color: #555; margin-top: 4px; }
-        body.light-theme .btn span { color: #666; }
-        .btn:active { transform: scale(0.98); opacity: 0.9; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+        .footer-action {
+            width: 100%;
+            padding-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            line-height: 1.3;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-accent {
+            background: var(--user-bubble);
+            color: #ffffff;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 122, 255, 0.2);
+        }
+
+        .btn span {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
     </style>
 </head>
 <body>
@@ -79,9 +276,9 @@
 </div>
 
 <div class="calendar-section" id="calendarBlock">
-    <div class="calendar-title">Дата встречи:</div>
+    <div class="calendar-title">📅 Выберите дату встречи:</div>
     <div class="days-row" id="daysRow"></div>
-    <div class="calendar-title" style="margin-top:8px;">Свободное время (МСК):</div>
+    <div class="calendar-title" style="margin-top:8px;">⏰ Свободное время (МСК):</div>
     <div class="slots-grid" id="slotsGrid"></div>
 </div>
 
@@ -92,39 +289,25 @@
 <div class="footer-action" id="actionBlock">
     <button class="btn" onclick="startFlow('ДИАГНОСТИКА', '3 000 РУБ', 'узнать, где моя текущая воронка сливает клиентов')">
         <b>ДИАГНОСТИКА (3 000 ₽)</b>
-        <span style="color: rgba(0,0,0,0.6);">Узнать, где моя текущая воронка тайно сливает клиентов.</span>
+        <span>Узнать, где моя текущая воронка тайно сливает клиентов.</span>
     </button>
     <button class="btn" onclick="startFlow('ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА', '2 500 РУБ', 'по косточкам разбираем ваше позиционирование, продукт и психологию')">
         <b>ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА (2 500 ₽)</b>
-        <span style="color: rgba(0,0,0,0.6);">По косточкам разбираем ваше позиционирование, продукт и психологию вашего клиента, чтобы создать систему под задачу, а не для красоты.</span>
+        <span>По косточкам разбираем ваше позиционирование, продукт и психологию вашего клиента, чтобы создать систему под задачу, а не для красоты.</span>
     </button>
     <button class="btn" onclick="startFlow('ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ', '500 РУБ', 'в течении 20 минут разбираюсь какая услуга полезна')">
         <b>ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ (500 ₽)</b>
-        <span style="color: rgba(0,0,0,0.6);">В течение 20 минут разбираюсь, какая услуга вам может быть полезна именно сейчас, и отвечаю на ваши вопросы.</span>
+        <span>В течение 20 минут разбираюсь, какая услуга вам может быть полезна именно сейчас, и отвечаю на ваши вопросы.</span>
     </button>
 </div>
 
 <script>
     let tg = window.Telegram?.WebApp;
-    if (tg) {
-        try {
-            tg.expand();
-            if (tg.colorScheme === 'light') {
-                document.body.classList.add('light-theme');
-                document.documentElement.style.setProperty('--bg-color', '#f5f5f7');
-                document.documentElement.style.setProperty('--text-main', '#000000');
-                document.documentElement.style.setProperty('--text-muted', '#6e6e73');
-                document.documentElement.style.setProperty('--bot-bubble', '#ffffff');
-                document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.05)');
-            }
-        } catch (e) {
-            console.error("Telegram WebApp error:", e);
-        }
-    }
+    if (tg) { try { tg.expand(); } catch (e) {} }
 
-    // ВАША ССЫЛКА НА GOOGLE SCRIPT
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqmS63uARlrj-6Mn_pywtED8Ju-J4OvIeyjNKVihB2rJcyLV26pCMfebBHVKrqKn5K/exec";
-    
+    // ССЫЛКА НА ВАШ БЭКЕНД GOOGLE SCRIPT
+    const SCRIPT_URL = "https://google.com";
+
     const chatContainer = document.getElementById('chat');
     const actionBlock = document.getElementById('actionBlock');
     const typingIndicator = document.getElementById('typing');
@@ -133,247 +316,192 @@
     const textInput = document.getElementById('textInput');
     const daysRow = document.getElementById('daysRow');
     const slotsGrid = document.getElementById('slotsGrid');
-    
+
     let userName = "из_ВК_или_поиска";
-    let telegramFullName = "Пользователь";
-    let clientChatId = "";
-    
-    // ПОЛУЧАЕМ ДАННЫЕ ИЗ TELEGRAM
-    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const u = tg.initDataUnsafe.user;
-        userName = u.username ? `@${u.username}` : "скрыт";
-        telegramFullName = `${u.first_name || ''} ${u.last_name || ''}`.trim() || "Пользователь";
-        clientChatId = u.id ? u.id.toString() : "";
-        console.log("Client Chat ID:", clientChatId);
-    }
-    
-    let serviceType = "";
-    let clientName = "";
-    let clientNiche = "";
-    let clientPain = "";
-    let selectedDateStr = "";
-    let busySlots = [];
-    let currentStep = 0;
-    
-    // Слоты с 10:00 до 18:00
-    const AVAILABLE_HOURS = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-
-    function startFlow(name, price, desc) {
-        serviceType = `${name} (${price})`;
-        appendMessage(`${name} — ${price}`, "user");
-        actionBlock.style.display = "none";
-        typingIndicator.style.display = "block";
-        window.scrollTo(0, document.body.scrollHeight);
-        
-        setTimeout(() => {
-            typingIndicator.style.display = "none";
-            let introText = "";
-            if (name.includes("ДИАГНОСТИКА")) {
-                introText = " На диагностике мы под микроскопом разберем вашу текущую воронку, найдем скрытые разрывы в конверсии и оцифруем точные места утечки вашей прибыли.";
-            } else if (name.includes("РАЗБОР")) {
-                introText = "🤖 На персональном разборе мы полностью перепроектируем ваше позиционирование, упакуем смыслы продукта и выстроим логику воронки под вашу целевую аудиторию.";
-            } else {
-                introText = "🤖 На экспресс-консультации мы за 20 минут разберем ваш точечный запрос, определим вектор автоматизации и подберем необходимое решение.";
-            }
-            
-            appendMessage(`${introText}<br><br>Перед тем как открыть общий календарь Яндекса, давайте познакомимся. <b>Как я могу к вам обращаться? Напишите ваше имя:</b>`, "bot");
-            currentStep = 1;
-            inputBlock.style.display = "block";
-            textInput.placeholder = "Ваше имя...";
-            textInput.value = telegramFullName !== "Пользователь" ? telegramFullName : "";
-            
-            actionBlock.innerHTML = `<button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>`;
-            actionBlock.style.display = "flex";
-            window.scrollTo(0, document.body.scrollHeight);
-        }, 1200);
-    }
-
-    function handleInputSubmit() {
-        const value = textInput.value.trim();
-        if (!value) {
-            alert("Пожалуйста, заполните поле!");
-            return;
-        }
-        appendMessage(value, "user");
-        inputBlock.style.display = "none";
-        actionBlock.style.display = "none";
-        typingIndicator.style.display = "block";
-        window.scrollTo(0, document.body.scrollHeight);
-        
-        setTimeout(() => {
-            typingIndicator.style.display = "none";
-            textInput.value = "";
-            
-            if (currentStep === 1) {
-                clientName = value;
-                appendMessage(`Приятно познакомиться, ${clientName}! Уточните, пожалуйста, <b>какая у вас ниша бизнеса или инфобизнеса?</b>`, "bot");
-                currentStep = 2;
-                inputBlock.style.display = "block";
-                textInput.placeholder = "Ваша ниша...";
-                actionBlock.style.display = "flex";
-            } else if (currentStep === 2) {
-                clientNiche = value;
-                appendMessage(`Принято. И финальный вопрос: <b>что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?</b>`, "bot");
-                currentStep = 3;
-                inputBlock.style.display = "block";
-                textInput.placeholder = "Что мешает/тормозит...";
-                actionBlock.style.display = "flex";
-            } else if (currentStep === 3) {
-                clientPain = value;
-                loadCalendarData();
-            }
-            window.scrollTo(0, document.body.scrollHeight);
-        }, 1200);
-    }
-
-    function loadCalendarData() {
-        typingIndicator.style.display = "block";
-        fetch(`${SCRIPT_URL}?action=getBusySlots`)
-            .then(res => res.json())
-            .then(data => {
-                busySlots = data;
-                renderCalendar();
-            })
-            .catch(err => {
-                console.error("Load calendar error:", err);
-                busySlots = [];
-                renderCalendar();
-            });
-    }
-
-    function renderCalendar() {
-        typingIndicator.style.display = "none";
-        appendMessage(" Спасибо за честные ответы! Слот-система Яндекса синхронизирована. Выберите удобный день и время для встречи:", "bot");
-        calendarBlock.style.display = "flex";
-        daysRow.innerHTML = "";
-        
-        // Если в Москве >= 15:00, начинаем со следующего дня
-        const now = new Date();
-        const moscowHour = (now.getUTCHours() + 3) % 24;
-        const startOffset = moscowHour >= 15 ? 1 : 0;
-        
-        for (let i = startOffset; i < startOffset + 3; i++) {
-            const d = new Date();
-            d.setDate(d.getDate() + i);
-            const dateStr = d.toISOString().split('T')[0];
-            const options = { weekday: 'short', month: 'short', day: 'numeric' };
-            const label = d.toLocaleDateString('ru-RU', options);
-            
-            const btn = document.createElement('button');
-            btn.classList.add('day-btn');
-            if (i === startOffset) { 
-                btn.classList.add('active'); 
-                selectedDateStr = dateStr; 
-            }
-            btn.innerText = label;
-            btn.onclick = () => {
-                document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                selectedDateStr = dateStr;
-                renderHours(dateStr);
-            };
-            daysRow.appendChild(btn);
-        }
-        renderHours(selectedDateStr);
-    }
-
-    function renderHours(dateStr) {
-        slotsGrid.innerHTML = "";
-        AVAILABLE_HOURS.forEach(hour => {
-            const fullDateTimeCheck = `${dateStr} ${hour}`;
-            const isBusy = busySlots.includes(fullDateTimeCheck);
-            
-            const btn = document.createElement('button');
-            btn.classList.add('time-btn');
-            btn.innerText = hour;
-            
-            if (isBusy) {
-                btn.disabled = true;
-            } else {
-                btn.onclick = () => {
-                    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    bookSelectedSlot(fullDateTimeCheck);
-                };
-            }
-            slotsGrid.appendChild(btn);
-        });
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-    function bookSelectedSlot(dateTimeStr) {
-        calendarBlock.style.display = "none";
-        typingIndicator.style.display = "block";
-        window.scrollTo(0, document.body.scrollHeight);
-        
-        console.log("Booking data:", {
-            serviceType: serviceType,
-            clientName: clientName,
-            telegramFullName: telegramFullName,
-            userName: userName,
-            dateTime: dateTimeStr,
-            niche: clientNiche,
-            pain: clientPain,
-            clientChatId: clientChatId
-        });
-
-        const payload = {
-            action: "bookSlot",
-            type: serviceType,
-            fullName: `${clientName} (${telegramFullName})`,
-            userName: userName,
-            dateTime: dateTimeStr,
-            title: `${serviceType}: ${clientName}`,
-            niche: clientNiche,
-            pain: clientPain,
-            clientChatId: clientChatId
-        };
-        
-        fetch(SCRIPT_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.text())
-        .then(result => {
-            console.log("Server response:", result);
-            typingIndicator.style.display = "none";
-            
-            const dateParts = dateTimeStr.split(' ');
-            const currentHour = new Date().getHours();
-            
-            let finalMsg = `🔥 <b>Потрясающе! Ваша запись успешно подтверждена!</b><br><br>` +
-                           `📅 <b>Дата:</b> ${dateParts[0]}<br>` +
-                           `⏰ <b>Время:</b> ${dateParts[1]} (МСК)<br>` +
-                           `🎯 <b>Формат:</b> ${serviceType}<br><br>`;
-                           
-            if (currentHour >= 22 || currentHour < 8) {
-                finalMsg += `Поскольку сейчас глубокая ночь, Кристина детально изучит вашу анкету и лично напишет вам в ЛС утром в первую очередь для отправки ссылки на Zoom. Хорошего отдыха!`;
-            } else {
-                finalMsg += `Данные внесены в расписание. Кристина свяжется с вами в личных сообщениях в течение 2-3 часов для подтверждения созвона. Пожалуйста, держите уведомления включенными!`;
-            }
-            
-            appendMessage(finalMsg, "bot");
-            
-            setTimeout(() => {
-                if (tg) tg.close();
-            }, 1500);
-        })
-        .catch(err => {
-            typingIndicator.style.display = "none";
-            console.error("Booking error:", err);
-            appendMessage("❌ Ошибка связи с календарем. Данные сохранены, Кристина свяжется с вами вручную!", "bot");
-        });
-    }
-
-    function appendMessage(text, sender) {
-        const msgDiv = document.createElement('div');
-        msgDiv.classList.add('message', sender);
-        msgDiv.innerHTML = text;
-        chatContainer.appendChild(msgDiv);
-        window.scrollTo(0, document.body.scrollHeight);
-    }
+let telegramFullName = "Пользователь";
+let clientChatId = ""; // Важнейший параметр для вашего sendTG
+if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+const u = tg.initDataUnsafe.user;
+userName = u.username ? @${u.username} : "скрыт";
+telegramFullName = ${u.first_name || ''} ${u.last_name || ''}.trim() || "Пользователь";
+clientChatId = String(u.id); // Захватываем ID чата клиента для бэкенда!
+}
+let serviceType = "";
+let clientName = "";
+let clientNiche = "";
+let clientPain = "";
+let selectedDateStr = "";
+let busySlots = [];
+let currentStep = 0;
+const AVAILABLE_HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+function startFlow(name, price, desc) {
+serviceType = ${name} — ${price};
+appendMessage(${name} (${price}), "user");
+actionBlock.style.display = "none";
+typingIndicator.style.display = "block";
+window.scrollTo(0, document.body.scrollHeight);
+setTimeout(() => {
+typingIndicator.style.display = "none";
+let introText = "";
+if (name.includes("ДИАГНОСТИКА")) {
+introText = "🤖 На диагностике мы под микроскопом разберем вашу текущую воронку, найдем скрытые разрывы в конверсии и оцифруем точные места утечки вашей прибыли.";
+} else if (name.includes("РАЗБОР")) {
+introText = "🤖 На персональном разборе мы полностью перепроектируем ваше позиционирование, упакуем смыслы продукта и выстроим логику воронки под вашу целевую аудиторию.";
+} else {
+introText = "🤖 На экспресс-консультации мы за 20 минут разберем ваш точечный запрос, определим вектор автоматизации и подберем необходимое решение.";
+}
+appendMessage(${introText}<br><br>Перед тем как открыть общий календарь Яндекса, давайте познакомимся. <b>Как я могу к вам обращаться? Напишите ваше имя:</b>, "bot");
+currentStep = 1;
+inputBlock.style.display = "block";
+textInput.placeholder = "Ваше имя...";
+textInput.value = telegramFullName !== "Пользователь" ? telegramFullName : "";
+actionBlock.innerHTML = <button class="btn btn-accent" onclick="handleInputSubmit()">Далее ➔</button>;
+actionBlock.style.display = "flex";
+window.scrollTo(0, document.body.scrollHeight);
+}, 1200);
+}
+function handleInputSubmit() {
+const value = textInput.value.trim();
+if (!value) {
+alert("Пожалуйста, заполните поле!");
+return;
+}
+appendMessage(value, "user");
+inputBlock.style.display = "none";
+actionBlock.style.display = "none";
+typingIndicator.style.display = "block";
+window.scrollTo(0, document.body.scrollHeight);
+setTimeout(() => {
+typingIndicator.style.display = "none";
+textInput.value = "";
+if (currentStep === 1) {
+clientName = value;
+appendMessage(Приятно познакомиться, ${clientName}! Уточните, пожалуйста, <b>какая у вас ниша бизнеса или инфобизнеса?</b>, "bot");
+currentStep = 2;
+inputBlock.style.display = "block";
+textInput.placeholder = "Ваша ниша...";
+actionBlock.style.display = "flex";
+} else if (currentStep === 2) {
+clientNiche = value;
+appendMessage(Принято. И финальный вопрос: <b>что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?</b>, "bot");
+currentStep = 3;
+inputBlock.style.display = "block";
+textInput.placeholder = "Что мешает/тормозит...";
+actionBlock.style.display = "flex";
+} else if (currentStep === 3) {
+clientPain = value;
+loadCalendarData();
+}
+window.scrollTo(0, document.body.scrollHeight);
+}, 1200);
+}
+function loadCalendarData() {
+typingIndicator.style.display = "block";
+// Запрос к функции getBusySlots вашего бэкенда
+fetch(${SCRIPT_URL}?action=getBusySlots)
+.then(res => res.json())
+.then(data => {
+busySlots = data;
+renderCalendar();
+})
+.catch(err => {
+console.error("Ошибка чтения слотов:", err);
+busySlots = [];
+renderCalendar();
+});
+}
+function renderCalendar() {
+typingIndicator.style.display = "none";
+appendMessage("🤖 Спасибо за ответы! Слот-система Яндекса синхронизирована. Выберите удобный день и время для встречи:", "bot");
+calendarBlock.style.display = "flex";
+daysRow.innerHTML = "";
+// Жесткая фиксация split('T')[0] для кликабельности кнопок!
+for (let i = 0; i < 3; i++) {
+const d = new Date();
+d.setDate(d.getDate() + i);
+const dateStr = d.toISOString().split('T')[0];
+const options = { weekday: 'short', month: 'short', day: 'numeric' };
+const label = d.toLocaleDateString('ru-RU', options);
+const btn = document.createElement('button');
+btn.classList.add('day-btn');
+if (i === 0) { btn.classList.add('active'); selectedDateStr = dateStr; }
+btn.innerText = label;
+btn.onclick = () => {
+document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+selectedDateStr = dateStr;
+renderHours(dateStr);
+};
+daysRow.appendChild(btn);
+}
+renderHours(selectedDateStr);
+}
+function renderHours(dateStr) {
+slotsGrid.innerHTML = "";
+AVAILABLE_HOURS.forEach(hour => {
+const fullDateTimeCheck = ${dateStr} ${hour};
+const isBusy = busySlots.includes(fullDateTimeCheck);
+const btn = document.createElement('button');
+btn.classList.add('time-btn');
+btn.innerText = hour;
+if (isBusy) btn.disabled = true;
+btn.onclick = () => {
+document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+bookSelectedSlot(fullDateTimeCheck);
+};
+slotsGrid.appendChild(btn);
+});
+window.scrollTo(0, document.body.scrollHeight);
+}
+function bookSelectedSlot(dateTimeStr) {
+calendarBlock.style.display = "none";
+typingIndicator.style.display = "block";
+window.scrollTo(0, document.body.scrollHeight);
+// Формируем payload в строгом соответствии с вашим Google Script doPost()
+const payload = {
+action: "bookSlot",
+type: serviceType,
+fullName: clientName,
+userName: userName,
+dateTime: dateTimeStr,
+title: ${serviceType}: ${clientName},
+niche: clientNiche,
+pain: clientPain,
+clientChatId: clientChatId // Идеально передаем ID для отправки клиенту!
+};
+fetch(SCRIPT_URL, {
+method: "POST",
+mode: "no-cors",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify(payload)
+}).then(() => {
+typingIndicator.style.display = "none";
+const currentHour = new Date().getHours();
+const timeParts = dateTimeStr.split(' ');
+let finalMsg = 🔥 <b>Потрясающе, ${clientName}! Ваша запись успешно подтверждена!</b><br><br> +
+📅 <b>Дата:</b> ${timeParts[0]}<br> +
+⏰ <b>Время:</b> ${timeParts[1]} (МСК)<br> +
+🎯 <b>Формат:</b> ${serviceType}<br><br>;
+if (currentHour >= 22 || currentHour < 8) {
+finalMsg += Поскольку сейчас глубокая ночь, Кристина детально изучит вашу анкету и лично напишет вам в ЛС утром со ссылкой на Zoom. Хорошего отдыха!;
+} else {
+finalMsg += Данные внесены в расписание. Кристина пришлет ссылку на Zoom в личные сообщения в течение 2-3 часов. Пожалуйста, держите уведомления включенными!;
+}
+appendMessage(finalMsg, "bot");
+}).catch(err => {
+typingIndicator.style.display = "none";
+appendMessage("❌ Ошибка связи с календарем. Кристина свяжется с вами вручную!", "bot");
+console.error(err);
+});
+}
+function appendMessage(text, sender) {
+const msgDiv = document.createElement('div');
+msgDiv.classList.add('message', sender);
+msgDiv.innerHTML = text;
+chatContainer.appendChild(msgDiv);
+window.scrollTo(0, document.body.scrollHeight);
+}
 </script>
-
 </body>
 </html>
