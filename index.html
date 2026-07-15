@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кристина.AI | Выбор услуги</title>
-    <!-- Официальный скрипт Telegram Web Apps -->
-    <script src="https://telegram.org"></script>
     <style>
         :root {
             --bg-color: #0d0e12;
             --border-color: rgba(255, 255, 255, 0.1);
             --text-main: #ffffff;
             --text-muted: #8e929b;
-            --user-bubble: linear-gradient(135deg, #007aff, #0056b3);
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -47,22 +44,28 @@
             border-bottom-left-radius: 4px;
         }
         .footer-action { width: 100%; padding-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
-        .btn {
+        
+        /* Стилизация нативных ссылок под белые премиум-кнопки */
+        .btn-link {
             background: #ffffff;
             color: #000000;
-            border: none;
+            text-decoration: none;
             padding: 16px;
             border-radius: 14px;
             font-size: 14px;
             font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
+            display: block;
             line-height: 1.3;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            box-sizing: border-box;
         }
-        .btn span { display: block; font-size: 11px; font-weight: 400; color: #666; margin-top: 4px; }
-        .btn:active { transform: scale(0.98); }
+        .btn-link b {
+            display: block;
+            font-size: 14px;
+            color: #000000;
+        }
+        .btn-link span { display: block; font-size: 11px; font-weight: 400; color: #666; margin-top: 4px; }
+        .btn-link:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
@@ -72,54 +75,27 @@
     <p>Архитектура автоматизации инфобизнеса</p>
 </div>
 
-<div class="chat-container" id="chat">
+<div class="chat-container">
     <div class="message">
         🤖 Рада видеть вас в КРИСТИНА.AI! Я Lina - AI менеджер для записи клиентов к Кристине на консультацию или диагностику.<br><br>Выберите, что вам нужно в данный момент?
     </div>
 </div>
 
-<div class="footer-action" id="actionBlock">
-    <button class="btn" onclick="sendToBot('diag')">
+<div class="footer-action">
+    <!-- Нативный протокол Telegram для безупречного старта сценариев опроса -->
+    <a href="tg://resolve?domain=diagnostika_kris_bot&start=diag" class="btn-link">
         <b>ДИАГНОСТИКА (3 000 ₽)</b>
         <span>Узнать, где моя текущая воронка тайно сливает клиентов.</span>
-    </button>
-    <button class="btn" onclick="sendToBot('razbor')">
+    </a>
+    <a href="tg://resolve?domain=diagnostika_kris_bot&start=razbor" class="btn-link">
         <b>ПЕРСОНАЛЬНЫЙ РАЗБОР ПРОЕКТА (2 500 ₽)</b>
         <span>По косточкам разбираем ваше позиционирование, продукт и психологию вашего клиента.</span>
-    </button>
-    <button class="btn" onclick="sendToBot('consult')">
+    </a>
+    <a href="tg://resolve?domain=diagnostika_kris_bot&start=consult" class="btn-link">
         <b>ПЕРСОНАЛЬНАЯ КОНСУЛЬТАЦИЯ (500 ₽)</b>
         <span>В течение 20 минут разбираюсь, какая услуга вам может быть полезна именно сейчас.</span>
-    </button>
+    </a>
 </div>
 
-<script>
-    var tg = window.Telegram?.WebApp;
-    if (tg) { try { tg.expand(); } catch (e) {} }
-
-    function sendToBot(command) {
-        try {
-            // ИНСТРУКЦИЯ НА ЭКРАНЕ СМАРТФОНА
-            var chatContainer = document.getElementById("chat");
-            var actionBlock = document.getElementById("actionBlock");
-            
-            var botReplyDiv = document.createElement("div");
-            botReplyDiv.style.marginTop = "15px";
-            botReplyDiv.classList.add("message");
-            botReplyDiv.innerHTML = "🔥 <b>Отличный выбор! Формат зафиксирован.</b><br><br>👉 Пожалуйста, <b>закройте это окно</b> (нажмите на крестик в правом верхнем углу экрана).<br><br>Я уже отправила первый вопрос в наш чат бота, мы продолжим прямо там!";
-            if (chatContainer) chatContainer.appendChild(botReplyDiv);
-            
-            if (actionBlock) actionBlock.style.display = "none";
-            window.scrollTo(0, document.body.scrollHeight);
-
-            if (tg) {
-                // Перенаправление без авто-закрытия
-                tg.openTelegramLink("https://t.me" + command);
-            }
-        } catch (e) {
-            if (tg) tg.close();
-        }
-    }
-</script>
 </body>
 </html>
