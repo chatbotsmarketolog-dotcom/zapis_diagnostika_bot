@@ -105,7 +105,7 @@
 
 <script>
     // ✅ САМЫЙ СВЕЖИЙ URL ВАШЕГО СКРИПТА
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyxyv67CHLXKPWxBD0fzEd382SeIh4id8-VemA1sFgH_CGdN5BKaTosszmQMI8AqmN/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz65JKMqp3OB8VcfWa6eXvWUV605NJcXRc2_hz6yc8JkVHPZtYShxxidqOSui6ykWcT/exec";
 
     let tg = window.Telegram?.WebApp;
     let clientChatId = ""; 
@@ -170,7 +170,7 @@
             return;
         }
 
-        // ПРОВЕРКА: Поле не должно быть пустым или слишком коротким
+        // ПРОВЕРКА: Поле не должно быть пустым или слишком коротким (минимум 2 символа)
         if (!inputValue || inputValue.length < 2) {
             textInput.style.borderColor = "#ff3b30";
             setTimeout(() => { textInput.style.borderColor = "rgba(255, 255, 255, 0.1)"; }, 1000);
