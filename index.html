@@ -42,6 +42,15 @@
         }
         .bot { background: var(--bot-bubble); align-self: flex-start; border-bottom-left-radius: 4px; }
         .user { background: var(--user-bubble); align-self: flex-end; border-bottom-right-radius: 4px; border: none; }
+        
+        .input-container { display: none; width: 100%; margin-top: 10px; animation: fadeIn 0.4s ease forwards; box-sizing: border-box; }
+        .input-field {
+            width: 100%; background: rgba(255, 255, 255, 0.07); border: 1px solid var(--border-color);
+            padding: 16px; border-radius: 12px; color: #fff; font-size: 15px; outline: none; box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .input-field:focus { border-color: var(--accent-glow); }
+
         .typing-indicator {
             display: none; align-self: flex-start; background: var(--bot-bubble); padding: 12px 20px;
             border-radius: 20px; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); margin-top: 5px;
@@ -52,14 +61,17 @@
         }
         .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
         .footer-action { width: 100%; padding-bottom: 20px; }
         .btn {
             background: #ffffff; color: #000000; border: none; padding: 16px; border-radius: 14px;
             font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s ease;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
+        .btn-accent { background: var(--user-bubble); color: #ffffff; text-align: center; box-shadow: 0 0 20px rgba(0, 122, 255, 0.2); }
         .btn:active { transform: scale(0.98); opacity: 0.9; }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     </style>
@@ -73,7 +85,9 @@
 
 <div class="chat-container" id="chat">
     <div class="message bot">
-        🤖 Рада видеть вас! Я интеллектуальный ассистент Кристины.<br><br>Помогаю экспертам выстроить надежные автоворонки, которые заменяют рутину и освобождают до 12 часов в неделю.<br><br>Чтобы записаться на аудит вашей системы продаж, нажмите кнопку ниже.
+        🤖 Рада видеть вас! Я интеллектуальный ассистент Кристины.<br><br>
+        Помогаю экспертам выстроить надежные автоворонки, которые заменяют рутину и освобождают до 12 часов в неделю.<br><br>
+        Чтобы записаться на аудит вашей системы продаж, нажмите кнопку ниже.
     </div>
 </div>
 
@@ -81,93 +95,165 @@
     <span></span><span></span><span></span>
 </div>
 
-<div class="footer-action">
-    <button class="btn" id="actionBtn" onclick="startDiagnostics()">Записаться на диагностику</button>
+<div class="input-container" id="inputBlock">
+    <input type="text" class="input-field" id="textInput" placeholder="Введите ответ...">
+</div>
+
+<div class="footer-action" id="actionBlock">
+    <button class="btn" id="mainBtn" onclick="handleAction()">Записаться на диагностику</button>
 </div>
 
 <script>
-    // Ссылка на ваш развернутый Google Apps Script
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWLgfmCJM8h-PAykUlKWxUTpAN-PiFuB8FXn6vrVOnIYLcKyvCHJwcq3ji34Ac8OrD/exec";
+    // ✅ ОБНОВЛЁННАЯ ССЫЛКА НА ВАШ СКРИПТ
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIoIhbZnQ8usDkwISKUcuKFkOigsU1cvokl3kdE_UJg_6Qh_i3bSJ22qaZkwEA-O4B/exec";
 
     let tg = window.Telegram?.WebApp;
-    
     if (tg) {
-        try {
-            tg.expand();
-            if (tg.colorScheme === 'light') {
-                document.documentElement.style.setProperty('--bg-color', '#f5f5f7');
-                document.documentElement.style.setProperty('--text-main', '#000000');
-                document.documentElement.style.setProperty('--text-muted', '#6e6e73');
-                document.documentElement.style.setProperty('--bot-bubble', '#ffffff');
-                document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.05)');
-                const actionBtnStyle = document.getElementById('actionBtn');
-                if (actionBtnStyle) {
-                    actionBtnStyle.style.background = '#007aff';
-                    actionBtnStyle.style.color = '#ffffff';
-                }
-            }
-        } catch (e) { console.log("Ошибка ТГ стилей:", e); }
+        tg.expand();
+        // ЖЁСТКАЯ ЧЁРНАЯ ТЕМА
+        document.documentElement.style.setProperty('--bg-color', '#0d0e12');
+        document.documentElement.style.setProperty('--text-main', '#ffffff');
+        document.documentElement.style.setProperty('--text-muted', '#8e929b');
+        document.documentElement.style.setProperty('--bot-bubble', 'rgba(255, 255, 255, 0.07)');
+        document.documentElement.style.setProperty('--border-color', 'rgba(255, 255, 255, 0.1)');
     }
 
     const chatContainer = document.getElementById('chat');
-    const actionBtn = document.getElementById('actionBtn');
+    const mainBtn = document.getElementById('mainBtn');
     const typingIndicator = document.getElementById('typing');
+    const inputBlock = document.getElementById('inputBlock');
+    const textInput = document.getElementById('textInput');
 
-    let userName = "нет_ника";
+    let userName = "скрыт";
     let fullName = "Пользователь из поиска";
 
     if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const u = tg.initDataUnsafe.user;
         userName = u.username ? `@${u.username}` : "скрыт";
-        fullName = `${u.first_name || ''} ${u.last_name || ''}`.trim() || "Пользователь";
+        fullName = `${u.first_name || ''} ${u.last_name || ''}`.trim() || "Пользователь из поиска";
     }
 
-    function startDiagnostics() {
-        appendMessage("Записаться на диагностику", "user");
-        if (actionBtn) {
-            actionBtn.disabled = true;
-            actionBtn.innerText = "Обработка...";
+    let currentStep = 0;
+    let clientName = "";
+    let clientNiche = "";
+    let clientPain = "";
+    let clientTime = "";
+
+    function handleAction() {
+        const inputValue = textInput.value.trim();
+
+        // ШАГ 0: Начало анкетирования
+        if (currentStep === 0) {
+            appendMessage("Записаться на диагностику", "user");
+            mainBtn.style.display = "none";
+            showTyping();
+            
+            setTimeout(() => {
+                hideTyping();
+                appendMessage("Отличный выбор! Перед тем как мы всё организуем, давайте познакомимся.<br><br>Как я могу к вам обращаться? Напишите ваше имя:", "bot");
+                currentStep = 1;
+                inputBlock.style.display = "block";
+                textInput.placeholder = "Ваше имя...";
+                textInput.value = fullName !== "Пользователь из поиска" ? fullName : "";
+                mainBtn.innerText = "Далее ➔";
+                mainBtn.classList.add("btn-accent");
+                mainBtn.style.display = "block";
+                textInput.focus();
+            }, 800);
+            return;
         }
 
-        if (typingIndicator) typingIndicator.style.display = "block";
-        window.scrollTo(0, document.body.scrollHeight);
+        // ПРОВЕРКА: Поле не должно быть пустым
+        if (!inputValue) {
+            textInput.style.borderColor = "#ff3b30";
+            setTimeout(() => { textInput.style.borderColor = "rgba(255, 255, 255, 0.1)"; }, 1000);
+            return;
+        }
 
-        // Отправляем данные в Google Script
+        appendMessage(inputValue, "user");
+        textInput.value = "";
+        inputBlock.style.display = "none";
+        mainBtn.disabled = true;
+        showTyping();
+
+        setTimeout(() => {
+            hideTyping();
+            mainBtn.disabled = false;
+
+            if (currentStep === 1) {
+                clientName = inputValue;
+                appendMessage(`Приятно познакомиться, ${clientName}! 😊<br><br>Уточните, пожалуйста, какая у вас ниша бизнеса или инфобизнеса?`, "bot");
+                currentStep = 2;
+                inputBlock.style.display = "block";
+                textInput.placeholder = "Например: психология, онлайн-школа, дизайн...";
+                textInput.focus();
+            } 
+            else if (currentStep === 2) {
+                clientNiche = inputValue;
+                appendMessage("Принято. И финальный вопрос: что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?", "bot");
+                currentStep = 3;
+                inputBlock.style.display = "block";
+                textInput.placeholder = "Опишите вашу главную задачу или проблему...";
+                textInput.focus();
+            } 
+            else if (currentStep === 3) {
+                clientPain = inputValue;
+                appendMessage("Поняла вас. И последнее: укажите удобную дату и время для связи с вами (например: *завтра в 15:00* или *25.10 после 18:00*).", "bot");
+                currentStep = 4;
+                inputBlock.style.display = "block";
+                textInput.placeholder = "Удобная дата и время...";
+                mainBtn.innerText = "Отправить заявку 🚀";
+                textInput.focus();
+            } 
+            else if (currentStep === 4) {
+                clientTime = inputValue;
+                sendToGoogleScript();
+            }
+        }, 800);
+    }
+
+    function sendToGoogleScript() {
+        showTyping();
+        
         fetch(SCRIPT_URL, {
             method: 'POST',
             body: JSON.stringify({
-                fullName: fullName,
-                userName: userName
+                fullName: clientName,
+                userName: userName,
+                niche: clientNiche,
+                pain: clientPain,
+                preferredTime: clientTime
             })
         })
         .then(response => response.json())
         .then(data => {
-            if (typingIndicator) typingIndicator.style.display = "none";
+            hideTyping();
+            inputBlock.style.display = "none";
+            mainBtn.style.display = "none";
             
             if (data.status === "success") {
                 appendMessage(
-                    "🔥 <b>Отличный выбор! Ваша заявка успешно принята.</b><br><br>" +
-                    "Я уже передала данные Кристине. Она свяжется с вами в личных сообщениях. Если вы оставили заявку днем, ответ придет в течение 2-3 часов. Если сейчас глубокая ночь — Кристина напишет вам утром в первую очередь.<br><br>" +
-                    "👉 <b>Что сделать сейчас:</b> закройте это мини-приложение (крестик в правом верхнем углу) и напишите в открывшийся чат бота вашу нишу бизнеса. Так Кристина сможет подготовиться к разбору вашего проекта заранее!", 
+                    `🔥 <b>Потрясающе, ${clientName}! Ваша заявка успешно подтверждена.</b><br><br>` +
+                    `Я зафиксировала ваше удобное время (${clientTime}) и передала все детали Кристине.<br><br>` +
+                    `👉 <b>Что сделать сейчас:</b> закройте это окно и напишите в чат бота короткое "Привет", чтобы мы начали работу.`, 
                     "bot"
                 );
-                if (tg) setTimeout(() => tg.close(), 4000);
+                if (tg) setTimeout(() => tg.close(), 5000);
             } else {
-                appendMessage("❌ Произошла ошибка при отправке заявки. Пожалуйста, попробуйте еще раз или напишите Кристине напрямую.", "bot");
-                if (actionBtn) {
-                    actionBtn.disabled = false;
-                    actionBtn.innerText = "Записаться на диагностику";
-                }
+                appendMessage("❌ Произошла техническая ошибка. Пожалуйста, напишите Кристине напрямую.", "bot");
+                mainBtn.style.display = "block";
+                mainBtn.innerText = "Попробовать снова";
+                mainBtn.disabled = false;
             }
         })
         .catch(err => {
             console.error(err);
-            if (typingIndicator) typingIndicator.style.display = "none";
+            hideTyping();
             appendMessage("❌ Ошибка соединения. Проверьте интернет и попробуйте снова.", "bot");
-            if (actionBtn) {
-                actionBtn.disabled = false;
-                actionBtn.innerText = "Записаться на диагностику";
-            }
+            inputBlock.style.display = "block";
+            mainBtn.style.display = "block";
+            mainBtn.innerText = "Повторить отправку";
+            mainBtn.disabled = false;
         });
     }
 
@@ -175,9 +261,26 @@
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message', sender);
         msgDiv.innerHTML = text;
-        if (chatContainer) chatContainer.appendChild(msgDiv);
+        chatContainer.appendChild(msgDiv);
         window.scrollTo(0, document.body.scrollHeight);
     }
+
+    function showTyping() {
+        typingIndicator.style.display = "block";
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function hideTyping() {
+        typingIndicator.style.display = "none";
+    }
+
+    // Обработка нажатия Enter в поле ввода
+    textInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            handleAction();
+        }
+    });
 </script>
 </body>
 </html>
