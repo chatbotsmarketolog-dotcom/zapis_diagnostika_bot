@@ -62,7 +62,7 @@
         .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
-        .footer-action { width: 100%; padding-bottom: 20px; }
+        .footer-action { width: 100%; padding-bottom: 20px; display: flex; flex-direction: column; gap: 12px; }
         .btn {
             background: #ffffff; color: #000000; border: none; padding: 16px; border-radius: 14px;
             font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s ease;
@@ -87,7 +87,7 @@
     <div class="message bot">
         🤖 Рада видеть вас! Я интеллектуальный ассистент Кристины.<br><br>
         Помогаю экспертам выстроить надежные автоворонки, которые заменяют рутину и освобождают до 12 часов в неделю.<br><br>
-        Чтобы записаться на аудит вашей системы продаж, нажмите кнопку ниже.
+        Выберите формат работы, чтобы начать:
     </div>
 </div>
 
@@ -100,33 +100,33 @@
 </div>
 
 <div class="footer-action" id="actionBlock">
-    <button class="btn" id="mainBtn" onclick="handleAction()">Записаться на диагностику</button>
+    <button class="btn" onclick="startFlow('Диагностика')">Записаться на диагностику</button>
+    <button class="btn" onclick="startFlow('Консультация')">Записаться на консультацию</button>
 </div>
 
 <script>
-    // ✅ САМЫЙ СВЕЖИЙ URL ВАШЕГО СКРИПТА
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz65JKMqp3OB8VcfWa6eXvWUV605NJcXRc2_hz6yc8JkVHPZtYShxxidqOSui6ykWcT/exec";
 
     let tg = window.Telegram?.WebApp;
     let clientChatId = ""; 
+    let selectedService = ""; // Переменная для хранения выбранной услуги
 
     if (tg) {
         tg.expand();
-        // ЖЁСТКАЯ ЧЁРНАЯ ТЕМА
         document.documentElement.style.setProperty('--bg-color', '#0d0e12');
         document.documentElement.style.setProperty('--text-main', '#ffffff');
         document.documentElement.style.setProperty('--text-muted', '#8e929b');
         document.documentElement.style.setProperty('--bot-bubble', 'rgba(255, 255, 255, 0.07)');
         document.documentElement.style.setProperty('--border-color', 'rgba(255, 255, 255, 0.1)');
 
-        // Получаем ID пользователя для отправки ему сообщения в чат
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             clientChatId = tg.initDataUnsafe.user.id;
         }
     }
 
     const chatContainer = document.getElementById('chat');
-    const mainBtn = document.getElementById('mainBtn');
+    const actionBlock = document.getElementById('actionBlock');
+    const mainBtn = document.getElementById('mainBtn'); // Будет создан динамически
     const typingIndicator = document.getElementById('typing');
     const inputBlock = document.getElementById('inputBlock');
     const textInput = document.getElementById('textInput');
@@ -146,31 +146,31 @@
     let clientPain = "";
     let clientTime = "";
 
+    // Функция запуска сценария при выборе кнопки
+    function startFlow(service) {
+        selectedService = service;
+        appendMessage(`Записаться на ${service.toLowerCase()}`, "user");
+        actionBlock.style.display = "none"; // Скрываем кнопки выбора
+        showTyping();
+        
+        setTimeout(() => {
+            hideTyping();
+            appendMessage(`Отличный выбор! Перед тем как мы всё организуем, давайте познакомимся.<br><br>Как я могу к вам обращаться? Напишите ваше имя:`, "bot");
+            currentStep = 1;
+            inputBlock.style.display = "block";
+            textInput.placeholder = "Ваше имя...";
+            textInput.value = fullName !== "Пользователь из поиска" ? fullName : "";
+            
+            // Создаем кнопку "Далее" динамически
+            actionBlock.innerHTML = '<button class="btn btn-accent" id="mainBtn" onclick="handleAction()">Далее ➔</button>';
+            actionBlock.style.display = "flex";
+            textInput.focus();
+        }, 800);
+    }
+
     function handleAction() {
         const inputValue = textInput.value.trim();
 
-        // ШАГ 0: Начало анкетирования
-        if (currentStep === 0) {
-            appendMessage("Записаться на диагностику", "user");
-            mainBtn.style.display = "none";
-            showTyping();
-            
-            setTimeout(() => {
-                hideTyping();
-                appendMessage("Отличный выбор! Перед тем как мы всё организуем, давайте познакомимся.<br><br>Как я могу к вам обращаться? Напишите ваше имя:", "bot");
-                currentStep = 1;
-                inputBlock.style.display = "block";
-                textInput.placeholder = "Ваше имя...";
-                textInput.value = fullName !== "Пользователь из поиска" ? fullName : "";
-                mainBtn.innerText = "Далее ➔";
-                mainBtn.classList.add("btn-accent");
-                mainBtn.style.display = "block";
-                textInput.focus();
-            }, 800);
-            return;
-        }
-
-        // ПРОВЕРКА: Поле не должно быть пустым или слишком коротким (минимум 2 символа)
         if (!inputValue || inputValue.length < 2) {
             textInput.style.borderColor = "#ff3b30";
             setTimeout(() => { textInput.style.borderColor = "rgba(255, 255, 255, 0.1)"; }, 1000);
@@ -180,12 +180,12 @@
         appendMessage(inputValue, "user");
         textInput.value = "";
         inputBlock.style.display = "none";
-        mainBtn.disabled = true;
+        document.getElementById('mainBtn').disabled = true;
         showTyping();
 
         setTimeout(() => {
             hideTyping();
-            mainBtn.disabled = false;
+            document.getElementById('mainBtn').disabled = false;
 
             if (currentStep === 1) {
                 clientName = inputValue;
@@ -197,7 +197,7 @@
             } 
             else if (currentStep === 2) {
                 clientNiche = inputValue;
-                appendMessage("Принято. И финальный вопрос: что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?", "bot");
+                appendMessage("Принято. И следующий вопрос: что именно сейчас мешает, тормозит развитие или отнимает больше всего времени в вашем проекте?", "bot");
                 currentStep = 3;
                 inputBlock.style.display = "block";
                 textInput.placeholder = "Опишите вашу главную задачу или проблему...";
@@ -209,7 +209,7 @@
                 currentStep = 4;
                 inputBlock.style.display = "block";
                 textInput.placeholder = "Удобная дата и время...";
-                mainBtn.innerText = "Отправить заявку 🚀";
+                document.getElementById('mainBtn').innerText = `Отправить заявку на ${selectedService.toLowerCase()} 🚀`;
                 textInput.focus();
             } 
             else if (currentStep === 4) {
@@ -220,7 +220,6 @@
     }
 
     function sendToGoogleScript() {
-        // ФИНАЛЬНАЯ ПРОВЕРКА ПЕРЕД ОТПРАВКОЙ
         if (!clientChatId) {
             appendMessage("❌ Ошибка: не удалось идентифицировать ваш Telegram. Пожалуйста, перезапустите приложение.", "bot");
             return;
@@ -232,6 +231,7 @@
             method: 'POST',
             body: JSON.stringify({
                 clientChatId: clientChatId,
+                serviceType: selectedService, // Передаем выбранную услугу
                 fullName: clientName,
                 userName: userName,
                 niche: clientNiche,
@@ -243,21 +243,20 @@
         .then(data => {
             hideTyping();
             inputBlock.style.display = "none";
-            mainBtn.style.display = "none";
+            actionBlock.style.display = "none";
             
             if (data.status === "success") {
                 appendMessage(
-                    `🔥 <b>Потрясающе, ${clientName}! Ваша заявка успешно подтверждена.</b><br><br>` +
-                    `Я передала все детали Кристине, и вы также получите подтверждение с резюме вашей анкеты прямо в этот чат с ботом.<br><br>` +
+                    `🔥 <b>Потрясающе, ${clientName}! Ваша заявка на ${selectedService.toLowerCase()} успешно подтверждена.</b><br><br>` +
+                    `Я передала все детали Кристине, и вы также получите подтверждение с резюме вашей анкеты прямо в чат с ботом.<br><br>` +
                     `👉 <b>Что сделать сейчас:</b> закройте это окно. Кристина свяжется с вами в указанное время.`, 
                     "bot"
                 );
                 if (tg) setTimeout(() => tg.close(), 6000);
             } else {
                 appendMessage("❌ Произошла техническая ошибка. Пожалуйста, попробуйте ещё раз или напишите Кристине напрямую.", "bot");
-                mainBtn.style.display = "block";
-                mainBtn.innerText = "Попробовать снова";
-                mainBtn.disabled = false;
+                actionBlock.innerHTML = '<button class="btn" id="mainBtn" onclick="handleAction()">Попробовать снова</button>';
+                actionBlock.style.display = "flex";
             }
         })
         .catch(err => {
@@ -265,9 +264,8 @@
             hideTyping();
             appendMessage("❌ Ошибка соединения. Проверьте интернет и попробуйте снова.", "bot");
             inputBlock.style.display = "block";
-            mainBtn.style.display = "block";
-            mainBtn.innerText = "Повторить отправку";
-            mainBtn.disabled = false;
+            actionBlock.innerHTML = '<button class="btn" id="mainBtn" onclick="handleAction()">Повторить отправку</button>';
+            actionBlock.style.display = "flex";
         });
     }
 
